@@ -1,0 +1,299 @@
+/* ============================================================
+   Atlas Ekonomi Kreatif Jakarta
+   Motif struktural: heksagon — unit analisis H3 yang dipakai
+   dalam risetnya, bukan ornamen.
+   Palet: coral (konsentrasi) ↔ teal (ketiadaan), mengikuti
+   konvensi diverging LISA sehingga warna membawa arti statistik.
+   ============================================================ */
+
+:root {
+  --petrol-900: #071417;
+  --petrol-800: #0B2027;
+  --petrol-700: #103038;
+  --petrol-600: #17434D;
+  --petrol-500: #24606C;
+
+  --kapur: #F2F0EA;
+  --kapur-2: #E3E1D8;
+  --kabut: #A9B6B8;
+  --kabut-2: #7A8C90;
+
+  --coral: #FF6B47;
+  --coral-terang: #FF9070;
+  --coral-gelap: #C43D20;
+  --teal: #3E9BB5;
+  --teal-gelap: #1F6076;
+  --emas: #E9B44C;
+  --ungu: #9B6DB5;
+
+  --sukses: #5FBF8B;
+
+  --ff-display: "Archivo", "Arial Narrow", sans-serif;
+  --ff-teks: "Newsreader", Georgia, serif;
+  --ff-data: "IBM Plex Mono", ui-monospace, monospace;
+
+  --maks: 1240px;
+  --radius: 3px;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+body {
+  margin: 0;
+  background: var(--petrol-900);
+  color: var(--kapur);
+  font-family: var(--ff-teks);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, .display { font-family: var(--ff-display); font-weight: 700; line-height: 1.08; letter-spacing: -.02em; margin: 0; }
+
+.mono { font-family: var(--ff-data); font-variant-numeric: tabular-nums; }
+
+a { color: var(--coral-terang); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { color: var(--coral); }
+
+:focus-visible { outline: 2px solid var(--emas); outline-offset: 3px; }
+
+.wrap { max-width: var(--maks); margin: 0 auto; padding: 0 28px; }
+.sempit { max-width: 720px; }
+
+/* ---------- label seksi ---------- */
+.eyebrow {
+  font-family: var(--ff-data);
+  font-size: 11px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--kabut-2);
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 18px;
+}
+.eyebrow::before {
+  content: ""; width: 11px; height: 12px; flex: none;
+  background: var(--coral);
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: 40px;
+  align-items: center;
+  padding: 80px 0 60px;
+  position: relative;
+  border-bottom: 1px solid var(--petrol-700);
+}
+.hero::after {
+  content: "";
+  position: absolute; inset: auto 0 0 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--coral), transparent);
+  opacity: .5;
+}
+.hero h1 {
+  font-size: clamp(38px, 5.6vw, 78px);
+  margin: 14px 0 22px;
+}
+.hero h1 em {
+  font-style: normal;
+  color: var(--coral);
+  display: block;
+}
+.hero .lead {
+  font-size: clamp(17px, 1.5vw, 20px);
+  color: var(--kabut);
+  max-width: 46ch;
+  margin-bottom: 30px;
+}
+.hero .lead strong { color: var(--kapur); font-weight: 600; }
+
+.kredit {
+  font-family: var(--ff-data); font-size: 11.5px; color: var(--kabut-2);
+  letter-spacing: .04em; line-height: 1.9;
+}
+
+/* angka besar pembuka */
+.angka-hero { display: flex; gap: 34px; flex-wrap: wrap; margin: 0 0 30px; }
+.angka-hero div { border-left: 2px solid var(--petrol-600); padding-left: 14px; }
+.angka-hero b {
+  font-family: var(--ff-display); font-size: 30px; display: block; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.angka-hero span { font-family: var(--ff-data); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--kabut-2); }
+
+/* ============================================================
+   TILEGRAM HEKSAGONAL — elemen tanda tangan
+   ============================================================ */
+.peta-panel { position: relative; }
+#tilegram { width: 100%; height: auto; display: block; overflow: visible; }
+
+.hexcell { cursor: pointer; transition: transform .18s ease, opacity .25s ease; transform-origin: center; transform-box: fill-box; }
+.hexcell:hover { transform: scale(1.12); }
+.hexcell.terpilih { transform: scale(1.14); }
+.hexcell polygon { transition: fill .45s cubic-bezier(.4,0,.2,1), stroke .2s ease; stroke: var(--petrol-900); stroke-width: 1.6; }
+.hexcell.terpilih polygon { stroke: var(--emas); stroke-width: 2.4; }
+.hexcell text { font-family: var(--ff-data); font-size: 5.2px; fill: rgba(255,255,255,.62); pointer-events: none; text-anchor: middle; letter-spacing: .02em; }
+.hexcell.terang text { fill: rgba(7,20,23,.75); }
+
+.legenda { display: flex; align-items: center; gap: 6px; margin-top: 18px; flex-wrap: wrap; }
+.legenda .skala { display: flex; height: 9px; flex: 1; min-width: 160px; border-radius: 1px; overflow: hidden; }
+.legenda .skala i { flex: 1; }
+.legenda span { font-family: var(--ff-data); font-size: 10.5px; color: var(--kabut-2); letter-spacing: .05em; }
+
+/* pemilih metrik */
+.metrik { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+.metrik button {
+  font-family: var(--ff-data); font-size: 11px; letter-spacing: .06em;
+  background: transparent; color: var(--kabut);
+  border: 1px solid var(--petrol-600); border-radius: 40px;
+  padding: 6px 13px; cursor: pointer; transition: all .18s ease;
+}
+.metrik button:hover { border-color: var(--teal); color: var(--kapur); }
+.metrik button[aria-pressed="true"] { background: var(--coral); border-color: var(--coral); color: #240A03; font-weight: 600; }
+
+/* ============================================================
+   SEKSI UMUM
+   ============================================================ */
+section { padding: 96px 0; border-bottom: 1px solid var(--petrol-700); }
+section h2 { font-size: clamp(28px, 3.4vw, 44px); margin-bottom: 18px; max-width: 22ch; }
+section .intro { color: var(--kabut); max-width: 62ch; font-size: 18px; }
+
+.terang-sekali { background: var(--kapur); color: var(--petrol-900); }
+.terang-sekali .eyebrow { color: var(--petrol-500); }
+.terang-sekali .intro { color: var(--petrol-600); }
+.terang-sekali a { color: var(--coral-gelap); }
+
+/* ============================================================
+   PANEL NARASI
+   ============================================================ */
+.jelajah { display: grid; grid-template-columns: 1.15fr .85fr; gap: 44px; align-items: start; }
+
+.kartu-narasi {
+  background: var(--petrol-800);
+  border: 1px solid var(--petrol-700);
+  border-radius: var(--radius);
+  padding: 26px 28px 30px;
+  position: sticky; top: 24px;
+}
+.kartu-narasi .nama { font-family: var(--ff-display); font-size: 30px; line-height: 1.05; margin: 6px 0 4px; }
+.kartu-narasi .kota { font-family: var(--ff-data); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--kabut-2); }
+.kartu-narasi p { margin: 0 0 13px; font-size: 16.5px; }
+.kartu-narasi p:last-of-type { margin-bottom: 0; }
+
+.tag {
+  display: inline-block; font-family: var(--ff-data); font-size: 10.5px;
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 40px; border: 1px solid currentColor;
+}
+.tag.kritis { color: var(--coral); }
+.tag.prioritas { color: var(--emas); }
+.tag.matang { color: var(--sukses); }
+.tag.monokultur { color: var(--ungu); }
+.tag.netral { color: var(--kabut-2); }
+
+.stat-baris { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0 22px; padding: 16px 0; border-top: 1px solid var(--petrol-700); border-bottom: 1px solid var(--petrol-700); }
+.stat-baris div b { font-family: var(--ff-display); font-size: 19px; display: block; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.stat-baris div span { font-family: var(--ff-data); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--kabut-2); }
+
+.cari { position: relative; margin-bottom: 14px; }
+.cari input {
+  width: 100%; background: var(--petrol-800); border: 1px solid var(--petrol-600);
+  color: var(--kapur); font-family: var(--ff-data); font-size: 13px;
+  padding: 11px 14px; border-radius: var(--radius);
+}
+.cari input::placeholder { color: var(--kabut-2); }
+.saran { position: absolute; z-index: 30; top: 100%; left: 0; right: 0; background: var(--petrol-700); border: 1px solid var(--petrol-600); border-top: none; max-height: 230px; overflow-y: auto; }
+.saran button { display: block; width: 100%; text-align: left; background: none; border: none; color: var(--kapur); font-family: var(--ff-data); font-size: 12.5px; padding: 9px 14px; cursor: pointer; }
+.saran button:hover, .saran button:focus { background: var(--petrol-600); }
+
+/* ============================================================
+   BATANG & GRAFIK SEDERHANA
+   ============================================================ */
+.batang { display: flex; flex-direction: column; gap: 7px; }
+.batang .baris { display: grid; grid-template-columns: 168px 1fr 62px; gap: 12px; align-items: center; font-family: var(--ff-data); font-size: 12px; }
+.batang .rel { background: var(--petrol-700); height: 15px; position: relative; border-radius: 1px; overflow: hidden; }
+.batang .rel i { position: absolute; inset: 0 auto 0 0; display: block; border-radius: 1px; transition: width .8s cubic-bezier(.2,.8,.2,1); }
+.batang .nilai { text-align: right; color: var(--kabut); font-variant-numeric: tabular-nums; }
+.terang-sekali .batang .rel { background: var(--kapur-2); }
+.terang-sekali .batang .nilai { color: var(--petrol-600); }
+
+/* ============================================================
+   KARTU KLASTER
+   ============================================================ */
+.grid-klaster { display: grid; grid-template-columns: repeat(auto-fill, minmax(232px, 1fr)); gap: 14px; }
+.kartu-klaster {
+  background: var(--petrol-800); border: 1px solid var(--petrol-700);
+  border-radius: var(--radius); padding: 18px 18px 20px; position: relative; overflow: hidden;
+  transition: border-color .2s ease, transform .2s ease;
+}
+.kartu-klaster:hover { border-color: var(--coral); transform: translateY(-2px); }
+.kartu-klaster .hexbadge {
+  position: absolute; top: -14px; right: -14px; width: 74px; height: 82px; opacity: .1;
+  background: var(--coral);
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+}
+.kartu-klaster h4 { font-size: 17px; margin-bottom: 3px; }
+.kartu-klaster .meta { font-family: var(--ff-data); font-size: 10.5px; color: var(--kabut-2); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 13px; }
+.kartu-klaster dl { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; margin: 0; font-family: var(--ff-data); font-size: 12px; }
+.kartu-klaster dt { color: var(--kabut-2); }
+.kartu-klaster dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ============================================================
+   SENSITIVITAS
+   ============================================================ */
+.tabel { width: 100%; border-collapse: collapse; font-family: var(--ff-data); font-size: 13px; }
+.tabel th, .tabel td { padding: 11px 10px; text-align: right; border-bottom: 1px solid var(--petrol-700); font-variant-numeric: tabular-nums; }
+.tabel th:first-child, .tabel td:first-child { text-align: left; }
+.tabel th { font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--kabut-2); font-weight: 500; }
+.terang-sekali .tabel th, .terang-sekali .tabel td { border-color: var(--kapur-2); }
+.terang-sekali .tabel th { color: var(--petrol-500); }
+.pil { display: inline-block; padding: 2px 9px; border-radius: 40px; font-size: 11px; background: rgba(95,191,139,.16); color: var(--sukses); }
+.terang-sekali .pil { background: rgba(31,96,118,.12); color: var(--teal-gelap); }
+
+/* ============================================================
+   GALERI PETA
+   ============================================================ */
+.galeri { display: grid; grid-template-columns: repeat(auto-fit, minmax(268px, 1fr)); gap: 20px; }
+.galeri figure { margin: 0; background: #fff; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--kapur-2); }
+.galeri img { width: 100%; height: auto; display: block; }
+.galeri figcaption { font-family: var(--ff-data); font-size: 11px; padding: 11px 13px; color: var(--petrol-600); background: var(--kapur); line-height: 1.5; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer { background: var(--petrol-800); padding: 60px 0 46px; border: none; }
+footer .kolom { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; }
+footer h4 { font-family: var(--ff-data); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--kabut-2); margin-bottom: 12px; font-weight: 500; }
+footer p, footer li { font-size: 14px; color: var(--kabut); }
+footer ul { list-style: none; padding: 0; margin: 0; }
+footer li { margin-bottom: 6px; }
+
+/* ---------- animasi masuk ---------- */
+.muncul { opacity: 0; transform: translateY(14px); transition: opacity .7s ease, transform .7s ease; }
+.muncul.tampil { opacity: 1; transform: none; }
+
+/* ---------- responsif ---------- */
+@media (max-width: 940px) {
+  .hero { grid-template-columns: 1fr; min-height: auto; padding-top: 56px; gap: 30px; }
+  .jelajah { grid-template-columns: 1fr; }
+  .kartu-narasi { position: static; }
+  .stat-baris { grid-template-columns: repeat(2, 1fr); }
+  section { padding: 66px 0; }
+  .batang .baris { grid-template-columns: 118px 1fr 54px; font-size: 11px; }
+}
+@media (max-width: 560px) {
+  .wrap { padding: 0 18px; }
+  body { font-size: 16px; }
+  .angka-hero { gap: 20px; }
+}
