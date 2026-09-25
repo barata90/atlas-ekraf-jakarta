@@ -1,5 +1,5 @@
 /* ============================================================
-   Atlas Ekonomi Kreatif Jakarta — logika antarmuka
+   Atlas Ekonomi Kreatif Jakarta: logika antarmuka
    ============================================================ */
 (function () {
   "use strict";
@@ -7,108 +7,85 @@
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const n = NARASI.n;
+  const M = DATA.meta;
   const SVGNS = "http://www.w3.org/2000/svg";
 
   /* ------------------------------------------------------------
      TATA LETAK TILEGRAM
      Tiap kecamatan ditempatkan pada grid heksagon (baris, kolom)
-     mengikuti letak geografis relatifnya di Jakarta.
-     Baris 0 = pesisir utara, baris 5 = perbatasan selatan.
+     mengikuti letak geografis relatifnya. Baris 0 = pesisir utara.
      ------------------------------------------------------------ */
   const TATA = {
-    // Kepulauan Seribu — dipisahkan di atas, di luar daratan
-    "Kepulauan Seribu Utara": [-2, 3],
-    "Kepulauan Seribu Selatan": [-2, 4],
-    // Baris 0 — Jakarta Utara (pesisir)
-    "Penjaringan": [0, 2], "Pademangan": [0, 3], "Tanjung Priok": [0, 4],
-    "Koja": [0, 5], "Cilincing": [0, 6],
-    // Baris 1
+    "Penjaringan": [0, 2], "Pademangan": [0, 3], "Tanjung Priok": [0, 4], "Koja": [0, 5], "Cilincing": [0, 6],
     "Kalideres": [1, 0], "Cengkareng": [1, 1], "Tambora": [1, 2], "Taman Sari": [1, 3],
     "Sawah Besar": [1, 4], "Kemayoran": [1, 5], "Kelapa Gading": [1, 6], "Cakung": [1, 7],
-    // Baris 2
     "Kembangan": [2, 0], "Kebon Jeruk": [2, 1], "Grogol Petamburan": [2, 2], "Palmerah": [2, 3],
-    "Gambir": [2, 4], "Senen": [2, 5], "Johar Baru": [2, 6], "Cempaka Putih": [2, 7],
-    "Pulo Gadung": [2, 8],
-    // Baris 3
+    "Gambir": [2, 4], "Senen": [2, 5], "Johar Baru": [2, 6], "Cempaka Putih": [2, 7], "Pulo Gadung": [2, 8],
     "Pesanggrahan": [3, 1], "Kebayoran Lama": [3, 2], "Tanah Abang": [3, 3], "Menteng": [3, 4],
     "Matraman": [3, 5], "Jatinegara": [3, 6], "Duren Sawit": [3, 7],
-    // Baris 4
     "Cilandak": [4, 1], "Kebayoran Baru": [4, 2], "Setiabudi": [4, 3], "Mampang Prapatan": [4, 4],
     "Tebet": [4, 5], "Kramat Jati": [4, 6], "Makasar": [4, 7],
-    // Baris 5
     "Jagakarsa": [5, 2], "Pasar Minggu": [5, 3], "Pancoran": [5, 4], "Pasar Rebo": [5, 5],
     "Ciracas": [5, 6], "Cipayung": [5, 7],
   };
 
-  /* ---------- singkatan label heksagon ---------- */
   function singkat(nama) {
-    if (nama.startsWith("Kepulauan Seribu")) return "K." + nama.split(" ").pop().slice(0, 3);
     const kata = nama.split(" ");
     if (kata.length === 1) return nama.length > 9 ? nama.slice(0, 8) + "." : nama;
     return kata.map((w) => w.slice(0, 4)).join(" ");
   }
 
   /* ------------------------------------------------------------
-     METRIK
+     INDIKATOR PETA
      ------------------------------------------------------------ */
   const METRIK = [
-    { id: "poikm2", label: "Kepadatan aset", satuan: "per km²", jenis: "seq", desimal: 1,
-      ket: "Jumlah aset kreatif per kilometer persegi." },
-    { id: "nonkul", label: "Aset non-kuliner", satuan: "titik", jenis: "seq", desimal: 0,
-      ket: "Aset di luar kafe dan restoran — inti ekonomi kreatif." },
-    { id: "ikik", label: "Kecukupan (IKIK)", satuan: "indeks", jenis: "seq", desimal: 3,
-      ket: "Gabungan kepadatan, ragam subsektor, dan akses transit." },
-    { id: "ent", label: "Ragam subsektor", satuan: "entropi", jenis: "seq", desimal: 3,
-      ket: "Entropi Shannon. Rendah = monokultur, tinggi = beragam." },
-    { id: "gap", label: "Kesenjangan", satuan: "selisih peringkat", jenis: "div", desimal: 3,
-      ket: "Permintaan (penduduk) dikurangi pasokan (fasilitas)." },
-    { id: "prio", label: "Prioritas garap", satuan: "indeks", jenis: "div", desimal: 3,
-      ket: "Kesenjangan tinggi yang sudah terlayani transit." },
+    { id: "akses", label: "Akses ruang kreatif publik", satuan: "per 100 ribu penduduk", desimal: 1,
+      ket: "Ruang kreatif publik yang terjangkau dalam radius 1,5 km per 100 ribu penduduk, dihitung dengan 2SFCA (two-step floating catchment area)." },
+    { id: "pct_rendah", label: "Penduduk dengan akses rendah", satuan: "persen", desimal: 0,
+      ket: "Porsi penduduk tanpa ruang kreatif publik dalam 1,5 km, atau dengan akses kurang dari separuh median kota." },
+    { id: "kurang", label: "Kekurangan ruang kreatif", satuan: "ruang", desimal: 0,
+      ket: "Perkiraan jumlah ruang kreatif publik tambahan agar akses setiap penduduk mencapai median kota." },
+    { id: "dens_ovt", label: "Kepadatan aset kreatif", satuan: "per km²", desimal: 1,
+      ket: "Jumlah aset kreatif (Overture Maps) per kilometer persegi." },
+    { id: "pangsa", label: "Pangsa non-kuliner", satuan: "persen", desimal: 1,
+      ket: "Porsi aset kreatif di luar kafe dan restoran (Overture Maps)." },
+    { id: "cakupan", label: "Cakupan data OSM", satuan: "(1 = rata-rata kota)", desimal: 2,
+      ket: "Jumlah kafe dan restoran di OpenStreetMap dibanding Overture Maps, relatif terhadap rata-rata kota." },
   ];
 
-  /* ---------- skala warna ---------- */
-  const RAMPA_SEQ = ["#12262C", "#3B2B2D", "#6E3730", "#B24A2F", "#FF6B47"];
-  const RAMPA_DIV = ["#2E7D93", "#3E6C78", "#2A3B40", "#B24A2F", "#FF6B47"];
+  const RAMPA = ["#12262C", "#3B2B2D", "#6E3730", "#B24A2F", "#FF6B47"];
 
   function hex2rgb(h) {
     return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
   }
-  function warnaDari(rampa, t) {
+  function warnaDari(t) {
     t = Math.max(0, Math.min(1, t));
-    const seg = (rampa.length - 1) * t;
-    const i = Math.min(Math.floor(seg), rampa.length - 2);
+    const seg = (RAMPA.length - 1) * t;
+    const i = Math.min(Math.floor(seg), RAMPA.length - 2);
     const f = seg - i;
-    const a = hex2rgb(rampa[i]), b = hex2rgb(rampa[i + 1]);
+    const a = hex2rgb(RAMPA[i]), b = hex2rgb(RAMPA[i + 1]);
     const c = a.map((v, k) => Math.round(v + (b[k] - v) * f));
     return `rgb(${c[0]},${c[1]},${c[2]})`;
   }
-  // teks gelap jika latar terang
-  function latarTerang(rampa, t) { return t > 0.72; }
 
-  /* ---------- daratan saja untuk skala ---------- */
-  const DARAT = DATA.kecamatan.filter((k) => k.kota);
-  const PETA_KEC = Object.fromEntries(DATA.kecamatan.map((k) => [k.nama, k]));
+  const KEC = DATA.kecamatan;
+  const PETA_KEC = Object.fromEntries(KEC.map((k) => [k.nama, k]));
 
   function rentang(id) {
-    const v = DARAT.map((k) => k[id]).filter((x) => x !== null && !isNaN(x));
+    const v = KEC.map((k) => k[id]).filter((x) => x !== null && !isNaN(x));
     return { min: Math.min(...v), max: Math.max(...v) };
   }
   function normal(k, m) {
     const r = rentang(m.id);
-    if (m.jenis === "div") {
-      const abs = Math.max(Math.abs(r.min), Math.abs(r.max));
-      return (k[m.id] + abs) / (2 * abs);
-    }
-    // skala akar agar sebaran yang sangat miring tetap terbaca
     const t = (k[m.id] - r.min) / (r.max - r.min || 1);
-    return Math.sqrt(Math.max(0, t));
+    return Math.sqrt(Math.max(0, t));      // skala akar agar sebaran yang miring tetap terbaca
   }
 
   /* ------------------------------------------------------------
-     GAMBAR TILEGRAM
+     TILEGRAM
      ------------------------------------------------------------ */
-  const R = 20.5;                       // jari-jari luar heksagon
-  const LEBAR = Math.sqrt(3) * R;       // lebar heksagon (pointy-top)
+  const R = 20.5;
+  const LEBAR = Math.sqrt(3) * R;
   const TINGGI_BARIS = 1.5 * R;
 
   function titikHex(cx, cy, r) {
@@ -123,43 +100,30 @@
   function gambarTilegram(svg, metrik, onPilih) {
     svg.textContent = "";
     const gsemua = document.createElementNS(SVGNS, "g");
-    const rampa = metrik.jenis === "div" ? RAMPA_DIV : RAMPA_SEQ;
-
     Object.entries(TATA).forEach(([nama, [baris, kol]]) => {
       const k = PETA_KEC[nama];
       if (!k) return;
-      const ganjil = ((baris % 2) + 2) % 2 === 1;
-      const cx = 26 + kol * LEBAR + (ganjil ? LEBAR / 2 : 0);
-      const cy = 30 + (baris + 2) * TINGGI_BARIS;
-
+      const cx = 26 + kol * LEBAR + (baris % 2 === 1 ? LEBAR / 2 : 0);
+      const cy = 26 + baris * TINGGI_BARIS;
       const g = document.createElementNS(SVGNS, "g");
       g.setAttribute("class", "hexcell");
       g.setAttribute("tabindex", "0");
       g.setAttribute("role", "button");
       g.dataset.nama = nama;
-
-      const t = k.kota ? normal(k, metrik) : 0;
-      const isi = k.kota ? warnaDari(rampa, t) : "#16323A";
-      if (k.kota && latarTerang(rampa, t)) g.classList.add("terang");
-
+      const t = k[metrik.id] === null ? 0 : normal(k, metrik);
+      if (t > 0.72) g.classList.add("terang");
       const poly = document.createElementNS(SVGNS, "polygon");
       poly.setAttribute("points", titikHex(cx, cy, R - 1.2));
-      poly.setAttribute("fill", isi);
+      poly.setAttribute("fill", warnaDari(t));
       g.appendChild(poly);
-
       const txt = document.createElementNS(SVGNS, "text");
       txt.setAttribute("x", cx);
       txt.setAttribute("y", cy + 1.8);
       txt.textContent = singkat(nama);
       g.appendChild(txt);
-
       const judul = document.createElementNS(SVGNS, "title");
-      const nilai = k[metrik.id];
-      judul.textContent = k.kota
-        ? `${nama} — ${metrik.label}: ${n(nilai, metrik.desimal)} ${metrik.satuan}`
-        : `${nama} — di luar analisis kebijakan`;
+      judul.textContent = `${nama}: ${metrik.label} ${n(k[metrik.id], metrik.desimal)} ${metrik.satuan}`;
       g.appendChild(judul);
-
       const aktif = () => onPilih(nama);
       g.addEventListener("click", aktif);
       g.addEventListener("keydown", (e) => {
@@ -167,7 +131,6 @@
       });
       gsemua.appendChild(g);
     });
-
     svg.appendChild(gsemua);
   }
 
@@ -177,16 +140,17 @@
 
   function isiLegenda(prefix, metrik) {
     const skala = $(prefix + "-skala");
-    const rampa = metrik.jenis === "div" ? RAMPA_DIV : RAMPA_SEQ;
     skala.textContent = "";
     for (let i = 0; i < 24; i++) {
       const el = document.createElement("i");
-      el.style.background = warnaDari(rampa, i / 23);
+      el.style.background = warnaDari(i / 23);
       skala.appendChild(el);
     }
     const r = rentang(metrik.id);
     $(prefix + "-min").textContent = n(r.min, metrik.desimal);
     $(prefix + "-max").textContent = n(r.max, metrik.desimal) + " " + metrik.satuan;
+    const ket = $(prefix + "-ket");
+    if (ket) ket.textContent = metrik.ket;
   }
 
   function bangunTombolMetrik(wadah, aktifId, onGanti) {
@@ -203,49 +167,38 @@
   }
 
   /* ------------------------------------------------------------
-     PANEL NARASI
+     PROFIL KECAMATAN
      ------------------------------------------------------------ */
-  let terpilih = "Duren Sawit";
+  let terpilih = "Kalideres";
 
   function tampilkanNarasi(nama) {
     const k = PETA_KEC[nama];
     if (!k) return;
     terpilih = nama;
-    const r = NARASI.tulis(k, DATA.kecamatan);
-
+    const r = NARASI.tulis(k, KEC);
     $("#k-nama").textContent = k.nama;
-    $("#k-kota").textContent = k.kota || "Di luar analisis kebijakan";
+    $("#k-kota").textContent = k.kota;
     const tag = $("#k-tag");
     tag.textContent = r.tag;
     tag.className = "tag " + r.warna;
-
     const stat = [
       ["Penduduk", NARASI.ribuan(k.pop)],
-      ["Aset kreatif", n(k.poi)],
-      ["Non-kuliner", n(k.nonkul)],
-      ["Ke transit", k.transit > 2000 ? n(k.transit / 1000, 1) + " km" : n(k.transit) + " m"],
+      ["Akses per 100 ribu", n(k.akses, 1)],
+      ["Akses rendah", n(k.pct_rendah, 0) + "%"],
+      ["Dekat halte", n(k.halte, 0) + "%"],
     ];
-    $("#k-stat").innerHTML = stat
-      .map(([l, v]) => `<div><b class="mono">${v}</b><span>${l}</span></div>`)
-      .join("");
-
+    $("#k-stat").innerHTML = stat.map(([l, v]) => `<div><b class="mono">${v}</b><span>${l}</span></div>`).join("");
     $("#k-narasi").innerHTML = r.paragraf.map((p) => `<p>${p}</p>`).join("");
-
     tandaiTerpilih($("#tilegram2"), nama);
     tandaiTerpilih($("#tilegram"), nama);
   }
 
-  /* ------------------------------------------------------------
-     PENCARIAN
-     ------------------------------------------------------------ */
   function pasangPencarian() {
     const input = $("#cari"), kotak = $("#saran");
-    const semua = DATA.kecamatan.map((k) => k.nama).sort();
-
+    const semua = KEC.map((k) => k.nama).sort();
     function render(daftar) {
       if (!daftar.length) { kotak.hidden = true; return; }
-      kotak.innerHTML = daftar.slice(0, 8)
-        .map((nm) => `<button type="button" data-nm="${nm}">${nm}</button>`).join("");
+      kotak.innerHTML = daftar.slice(0, 8).map((nm) => `<button type="button" data-nm="${nm}">${nm}</button>`).join("");
       kotak.hidden = false;
     }
     input.addEventListener("input", () => {
@@ -261,107 +214,148 @@
       document.getElementById("jelajah").scrollIntoView({ block: "start" });
     });
     input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        const b = kotak.querySelector("button");
-        if (b) b.click();
-      }
+      if (e.key === "Enter") { const b = kotak.querySelector("button"); if (b) b.click(); }
       if (e.key === "Escape") { kotak.hidden = true; input.blur(); }
     });
-    document.addEventListener("click", (e) => {
-      if (!e.target.closest(".cari")) kotak.hidden = true;
-    });
+    document.addEventListener("click", (e) => { if (!e.target.closest(".cari")) kotak.hidden = true; });
   }
 
   /* ------------------------------------------------------------
-     BATANG SUBSEKTOR
+     ANGKA DI TEKS, DIAMBIL DARI DATA.meta
+     ------------------------------------------------------------ */
+  function isiMeta() {
+    const f = {
+      rendah_jt: () => n(M.rendah / 1e6, 2),
+      rendah_jt_label: () => n(M.rendah / 1e6, 2) + " jt",
+      rasio_akses_x: () => n(M.rasio_akses, 0) + "×",
+      pct_rendah: () => n(M.pct_rendah, 1),
+      rasio_akses: () => n(M.rasio_akses, 0),
+      akses_max: () => n(M.akses_max, 1),
+      akses_min: () => n(M.akses_min, 1),
+      kec_max: () => M.kec_max,
+      kec_min: () => M.kec_min,
+      a_ref: () => n(M.a_ref, 1),
+      n_utama: () => n(M.utama.length),
+      utama: () => M.utama.join(", "),
+      lanjutan: () => M.lanjutan.join(" dan "),
+      aset_osm: () => n(M.aset_osm),
+      aset_ovt: () => n(M.aset_ovt),
+      rasio_osm_ovt: () => n(M.rasio_osm_ovt, 0),
+      pct_kuliner_ovt: () => n(M.pct_kuliner_ovt, 0),
+      pct_kuliner_osm: () => n(M.pct_kuliner_osm, 0),
+      moran_osm: () => n(M.moran_osm, 3),
+      moran_ovt: () => n(M.moran_ovt, 3),
+      hh: () => n(M.hh), ll: () => n(M.ll),
+      n_klaster: () => n(M.n_klaster),
+      mclp_cakupan: () => n(M.mclp_cakupan, 1),
+      mclp_warga: () => n(M.mclp_warga / 1e3, 0),
+      halte_rendah: () => n(M.halte_rendah, 0),
+      halte_semua: () => n(M.halte_semua, 0),
+      pop_jt: () => n(M.pop / 1e6, 2),
+      elastisitas: () => n(M.elastisitas, 2),
+      moran_pangsa: () => n(M.moran_pangsa, 3),
+      pangsa_kota: () => n(M.pangsa_kota_ovt, 1),
+      tanpa_nk: () => n(M.tanpa_nonkul_gabungan),
+      lit_pusel: () => n(M.pangsa_literasi_pusel, 1),
+      pop_pusel: () => n(M.pangsa_penduduk_pusel, 1),
+      tanpa_perpus: () => n(M.pct_tanpa_perpustakaan, 1),
+      luas: () => n(M.luas, 0),
+    };
+    $$("[data-meta]").forEach((el) => { const g = f[el.dataset.meta]; if (g) el.textContent = g(); });
+  }
+
+  /* ------------------------------------------------------------
+     BATANG SUBSEKTOR: OVERTURE, DENGAN JUMLAH OSM SEBAGAI PEMBANDING
      ------------------------------------------------------------ */
   function batangSubsektor() {
-    const wadah = $("#batang-subsektor");
-    const maks = Math.max(...DATA.subsektor.map((s) => s.n));
-    wadah.innerHTML = DATA.subsektor.map((s) => {
-      const w = (s.n / maks) * 100;
+    const maks = Math.max(...DATA.subsektor.map((s) => s.ovt));
+    $("#batang-subsektor").innerHTML = DATA.subsektor.map((s) => {
+      const w = Math.sqrt(s.ovt / maks) * 100;
       const warna = s.kat === "Kuliner" ? "var(--kabut-2)" : "var(--coral)";
-      return `<div class="baris">
+      return `<div class="baris baris-3">
         <span>${s.nama}</span>
         <span class="rel"><i style="width:0;background:${warna}" data-w="${w}"></i></span>
-        <span class="nilai">${n(s.n)}</span>
+        <span class="nilai">${n(s.ovt)}</span>
+        <span class="nilai osm">${n(s.osm)}</span>
       </div>`;
     }).join("");
   }
 
-  /* ------------------------------------------------------------
-     TABEL SENSITIVITAS
-     ------------------------------------------------------------ */
   function tabelSensitivitas() {
     $("#tabel-sensitivitas").innerHTML = DATA.sensitivitas.map((s) => `
       <tr>
         <td>${s.skenario}</td>
         <td class="mono">${n(s.I, 3)}</td>
-        <td><span class="pil">${n(s.p, 3)}</span></td>
+        <td><span class="pil">${s.p <= 0.00011 ? "≤ 0,0001" : n(s.p, 4)}</span></td>
       </tr>`).join("");
   }
 
-  /* ------------------------------------------------------------
-     KARTU KLASTER
-     ------------------------------------------------------------ */
   function kartuKlaster() {
     const urut = [...DATA.klaster].sort((a, b) => b.poi - a.poi).slice(0, 12);
-    $("#grid-klaster").innerHTML = urut.map((c) => {
-      const ragam = c.ent >= 0.45 ? "beragam" : c.ent >= 0.35 ? "cukup beragam" : "cenderung seragam";
+    $("#grid-klaster").innerHTML = urut.map((c, i) => {
+      const ragam = c.pangsa >= 15 ? "beragam" : c.pangsa >= 10 ? "cukup beragam" : "didominasi kuliner";
       return `<article class="kartu-klaster">
         <div class="hexbadge"></div>
         <h4>${c.kec}</h4>
-        <p class="meta">Klaster K-${c.id} · ${ragam}</p>
+        <p class="meta">Klaster ${i + 1} · ${ragam}</p>
         <dl>
           <dt>Aset</dt><dd>${n(c.poi)}</dd>
-          <dt>Non-kuliner</dt><dd>${n(c.nonkul)}</dd>
+          <dt>Non-kuliner</dt><dd>${n(c.nonkul)} (${n(c.pangsa, 0)}%)</dd>
           <dt>Subsektor</dt><dd>${c.nsub}</dd>
-          <dt>Ragam</dt><dd>${n(c.ent, 3)}</dd>
           <dt>Luas</dt><dd>${n(c.luas, 2)} km²</dd>
         </dl>
       </article>`;
     }).join("");
   }
 
-  /* ------------------------------------------------------------
-     KARTU PRIORITAS
-     ------------------------------------------------------------ */
   function kartuPrioritas() {
-    const urut = DARAT.slice().sort((a, b) => b.prio - a.prio).slice(0, 9);
-    $("#grid-prioritas").innerHTML = urut.map((k, i) => {
-      const aksi = k.nonkul === 0
-        ? "Fasilitas serba guna — belum ada apa pun untuk diperkuat."
-        : k.transit > 600
-          ? "Fasilitas kreatif perlu dibarengi perbaikan konektivitas."
-          : "Manfaatkan gedung milik daerah yang sudah ada di dekat transit.";
+    const urut = KEC.filter((k) => k.status === "Prioritas utama" || k.status === "Prioritas lanjutan")
+      .sort((a, b) => b.rendah - a.rendah);
+    $("#grid-prioritas").innerHTML = urut.map((k) => {
+      const aksi = k.halte_rendah < 40
+        ? "Simpul Kreatif perlu didukung layanan pengumpan (feeder) karena sebagian besar penduduk yang membutuhkan jauh dari halte."
+        : "Simpul Kreatif dapat ditempatkan di fasilitas publik yang sudah dekat dengan halte.";
       return `<article class="kartu-klaster">
         <div class="hexbadge"></div>
-        <p class="meta">Urutan ${i + 1} · ${k.kota}</p>
+        <p class="meta">${k.status} · ${k.kota}</p>
         <h4>${k.nama}</h4>
         <dl style="margin-top:12px">
           <dt>Penduduk</dt><dd>${NARASI.ribuan(k.pop)}</dd>
-          <dt>Aset kreatif</dt><dd>${n(k.poi)}</dd>
-          <dt>Non-kuliner</dt><dd>${n(k.nonkul)}</dd>
-          <dt>Ke transit</dt><dd>${n(k.transit)} m</dd>
+          <dt>Akses per 100 ribu</dt><dd>${n(k.akses, 1)}</dd>
+          <dt>Akses rendah</dt><dd>${NARASI.ribuan(k.rendah)}</dd>
+          <dt>Kekurangan ruang</dt><dd>±${n(k.kurang, 0)}</dd>
+          <dt>Dekat halte</dt><dd>${n(k.halte_rendah, 0)}%</dd>
         </dl>
         <p style="font-size:14px;margin:14px 0 0;color:var(--kabut)">${aksi}</p>
       </article>`;
     }).join("");
   }
 
-  /* ------------------------------------------------------------
-     ANIMASI MASUK
-     ------------------------------------------------------------ */
+  function tabelLokasi() {
+    $("#tabel-lokasi").innerHTML = DATA.lokasi.map((z) => `
+      <tr>
+        <td class="mono">${z.no}</td>
+        <td class="kiri">${z.kec}</td>
+        <td class="kiri">${z.nama}</td>
+        <td class="mono kanan">${n(z.warga / 1e3, 1)} ribu</td>
+        <td class="mono kanan${z.halte > 850 ? " jauh" : ""}">${n(z.halte)} m</td>
+        <td class="mono kanan">${n(z.stasiun)} m</td>
+      </tr>`).join("");
+  }
+
   function pasangReveal() {
     const kurangGerak = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const target = $$("section > .wrap > *, .kartu-klaster");
     target.forEach((el) => el.classList.add("muncul"));
-    if (kurangGerak) { target.forEach((el) => el.classList.add("tampil")); return; }
+    if (kurangGerak) {
+      target.forEach((el) => el.classList.add("tampil"));
+      $$("i[data-w]").forEach((i) => { i.style.width = i.dataset.w + "%"; });
+      return;
+    }
     const io = new IntersectionObserver((ent) => {
       ent.forEach((e) => {
         if (e.isIntersecting) {
           e.target.classList.add("tampil");
-          // isi batang saat terlihat
           $$("i[data-w]", e.target).forEach((i) => { i.style.width = i.dataset.w + "%"; });
           io.unobserve(e.target);
         }
@@ -370,11 +364,8 @@
     target.forEach((el) => io.observe(el));
   }
 
-  /* ------------------------------------------------------------
-     INISIALISASI
-     ------------------------------------------------------------ */
-  let metrikHero = "poikm2";
-  let metrikJelajah = "prio";
+  let metrikHero = "akses";
+  let metrikJelajah = "pct_rendah";
 
   function gambarUlangHero() {
     const m = METRIK.find((x) => x.id === metrikHero);
@@ -392,6 +383,7 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
+    isiMeta();
     gambarUlangHero();
     gambarUlangJelajah();
     tampilkanNarasi(terpilih);
@@ -400,6 +392,7 @@
     tabelSensitivitas();
     kartuKlaster();
     kartuPrioritas();
+    tabelLokasi();
     pasangReveal();
   });
 })();
