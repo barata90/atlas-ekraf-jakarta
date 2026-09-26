@@ -32,7 +32,8 @@ Aplikasi ini adalah pendamping karya tulis **Jakarta Economic Forum (JEF) 2026**
 index.html                 halaman utama
 assets/js/data.js          data hasil analisis (dibuat oleh scripts/export_web_data.py)
 assets/js/narrative.js     penyusun profil otomatis per kecamatan
-assets/js/app.js           peta skematik, pencarian, kartu, dan tabel
+assets/js/interpretasi.js  interpretasi otomatis (modal) saat batang, kartu, tabel, atau peta di-klik
+assets/js/app.js           peta skematik, pencarian, kartu, tabel, dan pemicu interpretasi
 figures/                   peta hasil analisis
 scripts/export_web_data.py ekspor tabel notebook Tahap 3 ke data.js
 ```
