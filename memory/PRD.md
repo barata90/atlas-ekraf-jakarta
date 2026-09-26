@@ -39,3 +39,9 @@ testing_agent iteration_1: frontend 100%, tanpa error console, semua alur terver
 - (P2) Opsi bagikan/salin teks interpretasi.
 - (P2) Interpretasi otomatis untuk heksagon di seksi profil (saat ini update kartu samping saja).
 - (P2) Mode terang penuh / toggle tema.
+
+## Update lanjutan (2026-06) — 4 fitur baru (semua terverifikasi, frontend 100%)
+1. Salin/Bagikan teks interpretasi di modal (interpretasi.js: salin/bagikan/teksPolos; tombol interp-copy/interp-share). Bagikan pakai navigator.share bila ada, jika tidak fallback salin. Tombol share otomatis disembunyikan di desktop.
+2. Unduh PNG kartu interpretasi (interpretasi.js: ekspor() render ke <canvas>, download 'interpretasi-<slug>.png'; offline, tanpa dependensi). Tombol interp-export.
+3. Heksagon di seksi profil (#tilegram2) kini juga membuka modal interpretasi + tetap memperbarui kartu samping (app.js: pilihKecamatan dipakai hero & profil).
+4. Mode cetak ramah PDF (style.css @media print: latar putih, teks gelap, sembunyikan kontrol interaktif, hindari potongan canggung) + tombol footer 'Cetak / simpan sebagai PDF' (#cetak -> window.print()).
