@@ -20,8 +20,10 @@ const INTERP = (function () {
     monokultur: "#9B6DB5", netral: "#A9B6B8",
   };
 
-  let overlay, dialog, elKat, elJudul, elSub, elStat, elTeks, btnTutup;
+  let overlay, dialog, elKat, elJudul, elSub, elStat, elTeks, btnTutup, elUmpan;
   let pemicuTerakhir = null;
+  let terakhir = null;
+  let umpanTimer = null;
 
   function pasang() {
     overlay = document.getElementById("interp-overlay");
@@ -36,12 +38,24 @@ const INTERP = (function () {
     overlay.addEventListener("click", (e) => { if (e.target === overlay) tutup(); });
     btnTutup.addEventListener("click", tutup);
     document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !overlay.hidden) tutup(); });
+
+    elUmpan = document.getElementById("interp-umpan");
+    const bCopy = document.getElementById("interp-copy");
+    const bShare = document.getElementById("interp-share");
+    const bExport = document.getElementById("interp-export");
+    if (bCopy) bCopy.addEventListener("click", salin);
+    if (bExport) bExport.addEventListener("click", ekspor);
+    if (bShare) {
+      if (navigator.share) bShare.addEventListener("click", bagikan);
+      else bShare.hidden = true;
+    }
   }
 
   function buka(d, pemicu) {
     pasang();
     if (!overlay) return;
     pemicuTerakhir = pemicu || null;
+    terakhir = d;
     dialog.style.setProperty("--aksen", WARNA[d.warna] || d.warna || WARNA.coral);
     elKat.textContent = d.kategori || "Interpretasi";
     elJudul.textContent = d.judul || "";
@@ -271,6 +285,181 @@ const INTERP = (function () {
       stat: d.stat(),
       paragraf: d.paragraf(),
     }, pemicu);
+  }
+
+  /* ---------- SALIN · BAGIKAN · UNDUH PNG ---------- */
+  function umpan(msg) {
+    if (!elUmpan) return;
+    elUmpan.textContent = msg;
+    elUmpan.classList.add("tampil");
+    clearTimeout(umpanTimer);
+    umpanTimer = setTimeout(() => elUmpan.classList.remove("tampil"), 1900);
+  }
+
+  function teksPolos(d) {
+    if (!d) return "";
+    const baris = [d.judul || ""];
+    if (d.sub) baris.push(d.sub);
+    baris.push("");
+    (d.stat || []).forEach(([l, v]) => baris.push(`${l}: ${v}`));
+    baris.push("");
+    (d.paragraf || []).forEach((p) => baris.push(String(p).replace(/<[^>]+>/g, "")));
+    baris.push("");
+    baris.push("— Atlas Ekonomi Kreatif Jakarta · Jakarta Economic Forum 2026");
+    return baris.join("\n");
+  }
+
+  function fallbackSalin(t, ok, gagal) {
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = t; ta.style.position = "fixed"; ta.style.top = "-1000px"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      const berhasil = document.execCommand("copy");
+      document.body.removeChild(ta);
+      berhasil ? ok() : gagal();
+    } catch (e) { gagal(); }
+  }
+
+  function salin() {
+    if (!terakhir) return;
+    const t = teksPolos(terakhir);
+    const ok = () => umpan("Teks tersalin ✓");
+    const gagal = () => umpan("Tidak bisa menyalin");
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(t).then(ok).catch(() => fallbackSalin(t, ok, gagal));
+    } else fallbackSalin(t, ok, gagal);
+  }
+
+  function bagikan() {
+    if (!terakhir) return;
+    if (navigator.share) {
+      navigator.share({ title: terakhir.judul, text: teksPolos(terakhir) }).catch(() => {});
+    } else salin();
+  }
+
+  function jalurHex(ctx, cx, cy, r) {
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const a = (Math.PI / 180) * (60 * i - 90);
+      const x = cx + r * Math.cos(a), y = cy + r * Math.sin(a);
+      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    }
+    ctx.closePath();
+  }
+
+  function slug(s) {
+    return String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "atlas";
+  }
+
+  async function ekspor() {
+    const d = terakhir;
+    if (!d) return;
+    umpan("Menyiapkan PNG…");
+    const aksen = WARNA[d.warna] || d.warna || WARNA.coral;
+    const W = 1080, P = 76, S = 2;
+    try {
+      await Promise.all([
+        document.fonts.load("800 56px Archivo"),
+        document.fonts.load("700 36px Archivo"),
+        document.fonts.load("500 22px 'IBM Plex Mono'"),
+        document.fonts.load("400 30px Newsreader"),
+      ]);
+      await document.fonts.ready;
+    } catch (e) { /* lanjut dengan fallback font */ }
+
+    const paint = (ctx, gambar) => {
+      const maxW = W - P * 2;
+      let y = P;
+      const wrap = (txt) => {
+        const kata = String(txt).split(/\s+/);
+        const lines = []; let cur = "";
+        for (const w of kata) {
+          const test = cur ? cur + " " + w : w;
+          if (ctx.measureText(test).width > maxW && cur) { lines.push(cur); cur = w; }
+          else cur = test;
+        }
+        if (cur) lines.push(cur);
+        return lines;
+      };
+      const blok = (txt, font, warna, lh, gap, opt) => {
+        opt = opt || {};
+        y += gap;
+        ctx.font = font; ctx.fillStyle = warna; ctx.textBaseline = "top";
+        const spasi = "letterSpacing" in ctx;
+        if (spasi) ctx.letterSpacing = (opt.spacing || 0) + "px";
+        const t = opt.upper ? String(txt).toUpperCase() : txt;
+        for (const ln of wrap(t)) { if (gambar) ctx.fillText(ln, P, y); y += lh; }
+        if (spasi) ctx.letterSpacing = "0px";
+      };
+      const garis = (gap) => { y += gap; if (gambar) { ctx.fillStyle = "rgba(255,255,255,.12)"; ctx.fillRect(P, y, maxW, 1); } y += 1; };
+
+      blok(d.kategori || "Interpretasi", "500 22px 'IBM Plex Mono'", aksen, 30, 0, { upper: true, spacing: 3 });
+      blok(d.judul || "", "800 56px Archivo", "#F2F0EA", 62, 16);
+      if (d.sub) blok(d.sub, "500 22px 'IBM Plex Mono'", "#8FA0A3", 30, 8, { upper: true, spacing: 2 });
+
+      garis(30);
+      const stat = d.stat || [];
+      const colW = maxW / 2;
+      y += 26;
+      for (let i = 0; i < stat.length; i += 2) {
+        const rowY = y;
+        for (let j = 0; j < 2; j++) {
+          const s = stat[i + j]; if (!s) continue;
+          const x = P + j * colW;
+          if (gambar) {
+            ctx.textBaseline = "top";
+            ctx.font = "700 36px Archivo"; ctx.fillStyle = "#F2F0EA";
+            ctx.fillText(String(s[1]), x, rowY);
+            ctx.font = "500 17px 'IBM Plex Mono'"; ctx.fillStyle = "#8FA0A3";
+            if ("letterSpacing" in ctx) ctx.letterSpacing = "1px";
+            ctx.fillText(String(s[0]).toUpperCase(), x, rowY + 46);
+            if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
+          }
+        }
+        y = rowY + 88;
+      }
+
+      garis(6);
+      y += 28;
+      const paras = d.paragraf || [];
+      for (let i = 0; i < paras.length; i++) {
+        blok(String(paras[i]).replace(/<[^>]+>/g, ""), "400 30px Newsreader", "#E3E1D8", 44, i ? 18 : 0);
+      }
+
+      garis(32);
+      y += 18;
+      blok("Atlas Ekonomi Kreatif Jakarta · Jakarta Economic Forum 2026", "500 18px 'IBM Plex Mono'", "#8FA0A3", 26, 0, { spacing: .5 });
+      blok("Interpretasi otomatis dari angka wilayah · 2SFCA · Moran's I · LISA · DBSCAN · MCLP", "500 15px 'IBM Plex Mono'", "#5F7175", 22, 6);
+
+      return y + P;
+    };
+
+    const meas = document.createElement("canvas").getContext("2d");
+    const H = Math.ceil(paint(meas, false));
+
+    const cv = document.createElement("canvas");
+    cv.width = W * S; cv.height = H * S;
+    const ctx = cv.getContext("2d");
+    ctx.scale(S, S);
+    const g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, "#0C232B"); g.addColorStop(1, "#071417");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = aksen; ctx.fillRect(0, 0, W, 6);
+    ctx.save();
+    ctx.globalAlpha = .1; ctx.fillStyle = aksen;
+    jalurHex(ctx, W - 64, 78, 150); ctx.fill();
+    ctx.restore();
+    paint(ctx, true);
+
+    cv.toBlob((blob) => {
+      if (!blob) { umpan("Gagal membuat PNG"); return; }
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = "interpretasi-" + slug(d.judul) + ".png";
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+      umpan("PNG terunduh ✓");
+    }, "image/png");
   }
 
   return { pasang, buka, tutup, subsektor, klaster, kecamatan, sensitivitas, lokasi, peta };

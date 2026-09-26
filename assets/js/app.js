@@ -191,8 +191,8 @@
     tandaiTerpilih($("#tilegram"), nama);
   }
 
-  // Heksagon hero: perbarui kartu profil + tampilkan interpretasi cepat sebagai modal.
-  function pilihDariHero(nama, node) {
+  // Heksagon (hero & profil): perbarui kartu profil + tampilkan interpretasi sebagai modal.
+  function pilihKecamatan(nama, node) {
     tampilkanNarasi(nama);
     INTERP.kecamatan(PETA_KEC[nama], node);
   }
@@ -427,14 +427,14 @@
 
   function gambarUlangHero() {
     const m = METRIK.find((x) => x.id === metrikHero);
-    gambarTilegram($("#tilegram"), m, pilihDariHero);
+    gambarTilegram($("#tilegram"), m, pilihKecamatan);
     isiLegenda("#leg", m);
     bangunTombolMetrik($("#metrik-hero"), metrikHero, (id) => { metrikHero = id; gambarUlangHero(); });
     tandaiTerpilih($("#tilegram"), terpilih);
   }
   function gambarUlangJelajah() {
     const m = METRIK.find((x) => x.id === metrikJelajah);
-    gambarTilegram($("#tilegram2"), m, tampilkanNarasi);
+    gambarTilegram($("#tilegram2"), m, pilihKecamatan);
     isiLegenda("#leg2", m);
     bangunTombolMetrik($("#metrik-jelajah"), metrikJelajah, (id) => { metrikJelajah = id; gambarUlangJelajah(); });
     tandaiTerpilih($("#tilegram2"), terpilih);
@@ -454,5 +454,7 @@
     pasangInterpretasi();
     pasangReveal();
     pasangProgres();
+    const cetak = $("#cetak");
+    if (cetak) cetak.addEventListener("click", () => window.print());
   });
 })();

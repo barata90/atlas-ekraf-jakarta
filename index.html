@@ -313,6 +313,10 @@
       </ul>
     </div>
   </div>
+  <div class="wrap footer-aksi">
+    <button type="button" id="cetak" class="tbl-cetak" data-testid="btn-cetak">Cetak / simpan sebagai PDF</button>
+    <span>Tata letak ramah cetak untuk lampiran dokumen resmi.</span>
+  </div>
 </footer>
 
 <!-- bar progres baca -->
@@ -328,6 +332,18 @@
     <p class="interp-sub" id="interp-sub"></p>
     <div class="interp-stat" id="interp-stat"></div>
     <div class="interp-teks" id="interp-teks"></div>
+    <div class="interp-aksi">
+      <button type="button" class="interp-btn" id="interp-copy" data-testid="interp-copy">
+        <span aria-hidden="true">⧉</span> Salin teks
+      </button>
+      <button type="button" class="interp-btn" id="interp-share" data-testid="interp-share" hidden>
+        <span aria-hidden="true">↗</span> Bagikan
+      </button>
+      <button type="button" class="interp-btn utama" id="interp-export" data-testid="interp-export">
+        <span aria-hidden="true">↓</span> Unduh PNG
+      </button>
+      <span class="interp-umpan" id="interp-umpan" role="status" aria-live="polite"></span>
+    </div>
     <p class="interp-kaki">Interpretasi disusun otomatis dari angka wilayah. Metode: 2SFCA · Moran's I · LISA · DBSCAN · MCLP.</p>
   </div>
 </div>
