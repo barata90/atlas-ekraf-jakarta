@@ -76,6 +76,7 @@
           <thead><tr><th>Skenario uji</th><th>Moran's I</th><th>p</th></tr></thead>
           <tbody id="tabel-sensitivitas"></tbody>
         </table>
+        <p class="klik-petunjuk">Klik baris untuk interpretasi tiap skenario</p>
         <p class="kredit" style="margin-top:14px">
           Nilai p dari uji permutasi (9.999 kali). Grid H3 resolusi 8 berukuran ±0,74 km² per sel.
         </p>
@@ -91,6 +92,7 @@
           <div class="baris baris-3 kepala"><span>Subsektor</span><span></span><span class="kanan">Overture</span><span class="kanan">OSM</span></div>
         </div>
         <div class="batang" id="batang-subsektor" style="margin-top:6px"></div>
+        <p class="klik-petunjuk">Klik salah satu batang untuk interpretasi otomatis</p>
       </div>
 
       <div>
@@ -175,6 +177,7 @@
       kira-kira lima menit berjalan kaki. Data: OpenStreetMap. Klaster terbesar belum tentu paling beragam.
     </p>
     <div class="grid-klaster" id="grid-klaster"></div>
+    <p class="klik-petunjuk">Klik kartu klaster untuk interpretasi otomatis</p>
   </div>
 </section>
 
@@ -188,14 +191,14 @@
       <span data-meta="luas">644</span> km² daratan Jakarta.
     </p>
     <div class="galeri">
-      <figure><img src="figures/peta_kepadatan.png" alt="Peta kepadatan aset kreatif Jakarta" loading="lazy">
+      <figure class="dapat-klik" data-peta="kepadatan" data-testid="figure-kepadatan" tabindex="0" role="button" aria-label="Interpretasi peta kepadatan aset kreatif"><span class="klik-hint">＋ interpretasi</span><img src="figures/peta_kepadatan.png" alt="Peta kepadatan aset kreatif Jakarta" loading="lazy">
         <div class="leg-peta">
           <span><i style="background:#EEEEEE"></i>0</span><span><i style="background:#FEE5D9"></i>0–2</span>
           <span><i style="background:#FCAE91"></i>2–5</span><span><i style="background:#FB6A4A"></i>5–15</span>
           <span><i style="background:#DE2D26"></i>15–50</span><span><i style="background:#A50F15"></i>&gt; 50</span>
         </div>
         <figcaption>Kepadatan aset kreatif per km² daratan (OpenStreetMap). Konsentrasi tertinggi di koridor pusat dan selatan.</figcaption></figure>
-      <figure><img src="figures/peta_lisa.png" alt="Peta klaster lokal LISA" loading="lazy">
+      <figure class="dapat-klik" data-peta="lisa" data-testid="figure-lisa" tabindex="0" role="button" aria-label="Interpretasi peta klaster lokal LISA"><span class="klik-hint">＋ interpretasi</span><img src="figures/peta_lisa.png" alt="Peta klaster lokal LISA" loading="lazy">
         <div class="leg-peta">
           <span><i style="background:#D7191C"></i>High-High</span><span><i style="background:#2C7BB6"></i>Low-Low</span>
           <span><i style="background:#ABD9E9"></i>Low-High</span><span><i style="background:#FDAE61"></i>High-Low</span>
@@ -204,7 +207,7 @@
         <figcaption>LISA (Local Indicators of Spatial Association) dengan koreksi FDR (false discovery rate) 5 persen.
           High-High: sel padat aset yang dikelilingi sel padat (<span data-meta="hh">31</span> sel).
           Low-Low: sel sepi aset yang dikelilingi sel sepi (<span data-meta="ll">114</span> sel).</figcaption></figure>
-      <figure><img src="figures/peta_akses.png" alt="Peta porsi penduduk dengan akses rendah" loading="lazy">
+      <figure class="dapat-klik" data-peta="akses" data-testid="figure-akses" tabindex="0" role="button" aria-label="Interpretasi peta akses ruang kreatif publik"><span class="klik-hint">＋ interpretasi</span><img src="figures/peta_akses.png" alt="Peta porsi penduduk dengan akses rendah" loading="lazy">
         <div class="leg-peta">
           <span><i style="background:#EDF8E9"></i>&lt; 10%</span><span><i style="background:#FDD49E"></i>10–50%</span>
           <span><i style="background:#FC8D59"></i>50–90%</span><span><i style="background:#B30000"></i>≥ 90%</span>
@@ -228,6 +231,7 @@
       jumlah ruang kreatif publik tambahan agar akses setiap penduduk mencapai median kota.
     </p>
     <div class="grid-klaster" id="grid-prioritas"></div>
+    <p class="klik-petunjuk">Klik kartu kecamatan untuk interpretasi otomatis</p>
 
     <h3 style="font-size:21px;margin:44px 0 10px">Sembilan lokasi usulan Simpul Kreatif</h3>
     <p class="intro">
@@ -243,6 +247,7 @@
         <tbody id="tabel-lokasi"></tbody>
       </table>
     </div>
+    <p class="klik-petunjuk">Klik baris untuk interpretasi tiap lokasi usulan</p>
     <p class="catatan-kecil">
       Lokasi usulan adalah fasilitas terdekat di data OpenStreetMap. Gedung final ditetapkan melalui verifikasi
       lapangan. Jarak ke halte lebih dari 850 m ditandai warna.
@@ -310,8 +315,26 @@
   </div>
 </footer>
 
+<!-- bar progres baca -->
+<div class="progres" id="progres" aria-hidden="true"></div>
+
+<!-- modal interpretasi otomatis -->
+<div class="interp-overlay" id="interp-overlay" data-testid="interp-overlay" hidden>
+  <div class="interp" role="dialog" aria-modal="true" aria-labelledby="interp-judul" data-testid="interp-dialog">
+    <button type="button" class="interp-tutup" data-testid="interp-close" aria-label="Tutup interpretasi">×</button>
+    <span class="interp-hex" aria-hidden="true"></span>
+    <p class="interp-kategori" id="interp-kategori"></p>
+    <h3 class="interp-judul" id="interp-judul"></h3>
+    <p class="interp-sub" id="interp-sub"></p>
+    <div class="interp-stat" id="interp-stat"></div>
+    <div class="interp-teks" id="interp-teks"></div>
+    <p class="interp-kaki">Interpretasi disusun otomatis dari angka wilayah. Metode: 2SFCA · Moran's I · LISA · DBSCAN · MCLP.</p>
+  </div>
+</div>
+
 <script src="assets/js/data.js"></script>
 <script src="assets/js/narrative.js"></script>
+<script src="assets/js/interpretasi.js"></script>
 <script src="assets/js/app.js"></script>
 </body>
 </html>

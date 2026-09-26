@@ -12,8 +12,6 @@
 
   /* ------------------------------------------------------------
      TATA LETAK TILEGRAM
-     Tiap kecamatan ditempatkan pada grid heksagon (baris, kolom)
-     mengikuti letak geografis relatifnya. Baris 0 = pesisir utara.
      ------------------------------------------------------------ */
   const TATA = {
     "Penjaringan": [0, 2], "Pademangan": [0, 3], "Tanjung Priok": [0, 4], "Koja": [0, 5], "Cilincing": [0, 6],
@@ -78,7 +76,7 @@
   function normal(k, m) {
     const r = rentang(m.id);
     const t = (k[m.id] - r.min) / (r.max - r.min || 1);
-    return Math.sqrt(Math.max(0, t));      // skala akar agar sebaran yang miring tetap terbaca
+    return Math.sqrt(Math.max(0, t));
   }
 
   /* ------------------------------------------------------------
@@ -124,7 +122,7 @@
       const judul = document.createElementNS(SVGNS, "title");
       judul.textContent = `${nama}: ${metrik.label} ${n(k[metrik.id], metrik.desimal)} ${metrik.satuan}`;
       g.appendChild(judul);
-      const aktif = () => onPilih(nama);
+      const aktif = () => onPilih(nama, g);
       g.addEventListener("click", aktif);
       g.addEventListener("keydown", (e) => {
         if (e.key === "Enter" || e.key === " ") { e.preventDefault(); aktif(); }
@@ -193,6 +191,12 @@
     tandaiTerpilih($("#tilegram"), nama);
   }
 
+  // Heksagon hero: perbarui kartu profil + tampilkan interpretasi cepat sebagai modal.
+  function pilihDariHero(nama, node) {
+    tampilkanNarasi(nama);
+    INTERP.kecamatan(PETA_KEC[nama], node);
+  }
+
   function pasangPencarian() {
     const input = $("#cari"), kotak = $("#saran");
     const semua = KEC.map((k) => k.nama).sort();
@@ -221,7 +225,7 @@
   }
 
   /* ------------------------------------------------------------
-     ANGKA DI TEKS, DIAMBIL DARI DATA.meta
+     ANGKA DI TEKS
      ------------------------------------------------------------ */
   function isiMeta() {
     const f = {
@@ -265,14 +269,15 @@
   }
 
   /* ------------------------------------------------------------
-     BATANG SUBSEKTOR: OVERTURE, DENGAN JUMLAH OSM SEBAGAI PEMBANDING
+     BATANG SUBSEKTOR
      ------------------------------------------------------------ */
   function batangSubsektor() {
     const maks = Math.max(...DATA.subsektor.map((s) => s.ovt));
-    $("#batang-subsektor").innerHTML = DATA.subsektor.map((s) => {
+    $("#batang-subsektor").innerHTML = DATA.subsektor.map((s, i) => {
       const w = Math.sqrt(s.ovt / maks) * 100;
       const warna = s.kat === "Kuliner" ? "var(--kabut-2)" : "var(--coral)";
-      return `<div class="baris baris-3">
+      return `<div class="baris baris-3 dapat-klik" data-i="${i}" tabindex="0" role="button"
+                   aria-label="Interpretasi subsektor ${s.nama}" data-testid="bar-subsektor-${i}">
         <span>${s.nama}</span>
         <span class="rel"><i style="width:0;background:${warna}" data-w="${w}"></i></span>
         <span class="nilai">${n(s.ovt)}</span>
@@ -282,19 +287,23 @@
   }
 
   function tabelSensitivitas() {
-    $("#tabel-sensitivitas").innerHTML = DATA.sensitivitas.map((s) => `
-      <tr>
+    $("#tabel-sensitivitas").innerHTML = DATA.sensitivitas.map((s, i) => `
+      <tr class="dapat-klik" data-i="${i}" tabindex="0" role="button"
+          aria-label="Interpretasi skenario ${s.skenario}" data-testid="row-sensitivitas-${i}">
         <td>${s.skenario}</td>
         <td class="mono">${n(s.I, 3)}</td>
         <td><span class="pil">${s.p <= 0.00011 ? "≤ 0,0001" : n(s.p, 4)}</span></td>
       </tr>`).join("");
   }
 
+  let klasterUrut = [];
   function kartuKlaster() {
-    const urut = [...DATA.klaster].sort((a, b) => b.poi - a.poi).slice(0, 12);
-    $("#grid-klaster").innerHTML = urut.map((c, i) => {
+    klasterUrut = [...DATA.klaster].sort((a, b) => b.poi - a.poi).slice(0, 12);
+    $("#grid-klaster").innerHTML = klasterUrut.map((c, i) => {
       const ragam = c.pangsa >= 15 ? "beragam" : c.pangsa >= 10 ? "cukup beragam" : "didominasi kuliner";
-      return `<article class="kartu-klaster">
+      return `<article class="kartu-klaster dapat-klik muncul" data-i="${i}" tabindex="0" role="button"
+                       aria-label="Interpretasi klaster ${i + 1} ${c.kec}" data-testid="kartu-klaster-${i}">
+        <span class="klik-hint">＋ interpretasi</span>
         <div class="hexbadge"></div>
         <h4>${c.kec}</h4>
         <p class="meta">Klaster ${i + 1} · ${ragam}</p>
@@ -315,7 +324,9 @@
       const aksi = k.halte_rendah < 40
         ? "Simpul Kreatif perlu didukung layanan pengumpan (feeder) karena sebagian besar penduduk yang membutuhkan jauh dari halte."
         : "Simpul Kreatif dapat ditempatkan di fasilitas publik yang sudah dekat dengan halte.";
-      return `<article class="kartu-klaster">
+      return `<article class="kartu-klaster dapat-klik muncul" data-nama="${k.nama}" tabindex="0" role="button"
+                       aria-label="Interpretasi ${k.nama}" data-testid="kartu-prioritas-${k.nama}">
+        <span class="klik-hint">＋ interpretasi</span>
         <div class="hexbadge"></div>
         <p class="meta">${k.status} · ${k.kota}</p>
         <h4>${k.nama}</h4>
@@ -332,8 +343,9 @@
   }
 
   function tabelLokasi() {
-    $("#tabel-lokasi").innerHTML = DATA.lokasi.map((z) => `
-      <tr>
+    $("#tabel-lokasi").innerHTML = DATA.lokasi.map((z, i) => `
+      <tr class="dapat-klik" data-i="${i}" tabindex="0" role="button"
+          aria-label="Interpretasi lokasi ${z.nama}" data-testid="row-lokasi-${i}">
         <td class="mono">${z.no}</td>
         <td class="kiri">${z.kec}</td>
         <td class="kiri">${z.nama}</td>
@@ -343,6 +355,40 @@
       </tr>`).join("");
   }
 
+  /* ------------------------------------------------------------
+     PENYAMBUNG KLIK → INTERPRETASI OTOMATIS
+     ------------------------------------------------------------ */
+  function delegasi(sel, handler) {
+    const c = $(sel);
+    if (!c) return;
+    const cari = (t) => t.closest("[data-i],[data-nama]");
+    c.addEventListener("click", (e) => { const el = cari(e.target); if (el && c.contains(el)) handler(el); });
+    c.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      const el = cari(e.target);
+      if (el && c.contains(el)) { e.preventDefault(); handler(el); }
+    });
+  }
+
+  function pasangInterpretasi() {
+    INTERP.pasang();
+    delegasi("#batang-subsektor", (el) => INTERP.subsektor(DATA.subsektor[+el.dataset.i], el));
+    delegasi("#grid-klaster", (el) => INTERP.klaster(klasterUrut[+el.dataset.i], +el.dataset.i + 1, el));
+    delegasi("#grid-prioritas", (el) => INTERP.kecamatan(PETA_KEC[el.dataset.nama], el));
+    delegasi("#tabel-sensitivitas", (el) => INTERP.sensitivitas(DATA.sensitivitas[+el.dataset.i], el));
+    delegasi("#tabel-lokasi", (el) => INTERP.lokasi(DATA.lokasi[+el.dataset.i], el));
+    $$(".galeri figure[data-peta]").forEach((fig) => {
+      const buka = () => INTERP.peta(fig.dataset.peta, fig);
+      fig.addEventListener("click", buka);
+      fig.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); buka(); }
+      });
+    });
+  }
+
+  /* ------------------------------------------------------------
+     ANIMASI & PROGRES
+     ------------------------------------------------------------ */
   function pasangReveal() {
     const kurangGerak = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const target = $$("section > .wrap > *, .kartu-klaster");
@@ -364,12 +410,24 @@
     target.forEach((el) => io.observe(el));
   }
 
+  function pasangProgres() {
+    const bar = $("#progres");
+    if (!bar) return;
+    const upd = () => {
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.transform = `scaleX(${h > 0 ? Math.min(1, window.scrollY / h) : 0})`;
+    };
+    window.addEventListener("scroll", upd, { passive: true });
+    window.addEventListener("resize", upd);
+    upd();
+  }
+
   let metrikHero = "akses";
   let metrikJelajah = "pct_rendah";
 
   function gambarUlangHero() {
     const m = METRIK.find((x) => x.id === metrikHero);
-    gambarTilegram($("#tilegram"), m, tampilkanNarasi);
+    gambarTilegram($("#tilegram"), m, pilihDariHero);
     isiLegenda("#leg", m);
     bangunTombolMetrik($("#metrik-hero"), metrikHero, (id) => { metrikHero = id; gambarUlangHero(); });
     tandaiTerpilih($("#tilegram"), terpilih);
@@ -393,6 +451,8 @@
     kartuKlaster();
     kartuPrioritas();
     tabelLokasi();
+    pasangInterpretasi();
     pasangReveal();
+    pasangProgres();
   });
 })();
