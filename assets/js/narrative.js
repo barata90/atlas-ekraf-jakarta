@@ -23,7 +23,8 @@ const NARASI = (function () {
   function statistikKota(daftar) {
     const akses = daftar.map((k) => k.akses);
     return {
-      aref: DATA.meta.a_ref,
+      aref: DATA.meta.a_ref,       // median akses kota berbobot penduduk (hasil run)
+      ambang: DATA.meta.ambang,    // ambang akses rendah = separuh median
       q75: kuantil(akses, 0.75),
       pangsa: DATA.meta.pangsa_kota_ovt,
     };
@@ -49,12 +50,14 @@ const NARASI = (function () {
 
   function kalimatAkses(k, s) {
     const rasio = k.akses / s.aref;
+    // dua desimal bila nilai kecamatan dekat batas kategori, agar angka yang tampil tidak tampak bertentangan
+    const d = [s.ambang, s.aref, 1.5 * s.aref].some((b) => Math.abs(k.akses - b) < 0.05) ? 2 : 1;
     let banding;
     if (rasio >= 1.5) banding = `sekitar ${n(rasio, 1)} kali median kota (${n(s.aref, 1)})`;
-    else if (rasio >= 1.0) banding = `di atas median kota (${n(s.aref, 1)})`;
-    else if (rasio >= 0.5) banding = `di bawah median kota (${n(s.aref, 1)})`;
-    else banding = `kurang dari separuh median kota (${n(s.aref, 1)})`;
-    let t = `Setiap 100 ribu penduduk ${k.nama} dapat menjangkau sekitar <b>${n(k.akses, 1)} ruang kreatif publik</b> ` +
+    else if (rasio >= 1.0) banding = `di atas median kota (${n(s.aref, d)})`;
+    else if (rasio >= 0.5) banding = `di bawah median kota (${n(s.aref, d)}), tetapi masih di atas ambang akses rendah (${n(s.ambang, d)})`;
+    else banding = `di bawah ambang akses rendah, yaitu separuh median kota (${n(s.ambang, d)})`;
+    let t = `Setiap 100 ribu penduduk ${k.nama} dapat menjangkau sekitar <b>${n(k.akses, d)} ruang kreatif publik</b> ` +
       `dalam radius 1,5 km, ${banding}. `;
     if (k.pct_rendah >= 1) {
       t += `Sebanyak ${ribuan(k.rendah)} penduduk (${n(k.pct_rendah, 0)} persen) memiliki akses rendah.`;
@@ -93,14 +96,23 @@ const NARASI = (function () {
       "sehingga simpul baru relatif mudah dicapai dengan transportasi umum.";
   }
 
+  function kalimatSimpul(k) {
+    if (k.simpul === null || k.simpul === undefined) return "";
+    if (k.simpul <= 0) {
+      return " Belum ada satu pun dari sembilan lokasi usulan Simpul Kreatif yang menjangkau penduduk dengan akses rendah di kecamatan ini.";
+    }
+    return ` Sembilan lokasi usulan Simpul Kreatif menjangkau ${n(k.simpul, 0)} persen penduduk dengan akses rendah ` +
+      "di kecamatan ini (sel dengan data memadai).";
+  }
+
   function kalimatKebijakan(k, p) {
     switch (p) {
       case "utama":
         return `Kecamatan ini termasuk <b>prioritas utama</b>: masuk sembilan besar pada ${n(k.frek, 0)} persen skenario. ` +
-          `Kekurangannya setara sekitar ${n(k.kurang, 0)} ruang kreatif publik.` + kalimatTransit(k);
+          `Kekurangannya setara sekitar ${n(k.kurang, 0)} ruang kreatif publik.` + kalimatSimpul(k) + kalimatTransit(k);
       case "lanjutan":
         return `Kecamatan ini termasuk <b>prioritas lanjutan</b> (masuk sembilan besar pada ${n(k.frek, 0)} persen skenario) ` +
-          "dan sebaiknya ditangani setelah verifikasi lapangan." + kalimatTransit(k);
+          "dan sebaiknya ditangani setelah verifikasi lapangan." + kalimatSimpul(k) + kalimatTransit(k);
       case "pusat":
         return "Kecamatan ini termasuk pusat ruang kreatif Jakarta. Fokusnya adalah menjaga keragaman dan membuka akses " +
           "bagi penduduk dari kecamatan sekitar.";

@@ -68,9 +68,11 @@
         <h3 style="font-size:21px;margin-bottom:10px">1. Aset kreatif terkonsentrasi di koridor pusat dan selatan</h3>
         <p class="intro" style="margin-bottom:20px">
           Moran's I (ukuran autokorelasi spasial) kepadatan aset bernilai <span data-meta="moran_osm">0,368</span>
-          pada OpenStreetMap dan <span data-meta="moran_ovt">0,291</span> pada Overture Maps, keduanya dengan
-          p ≤ 0,0001. Klaster tinggi terbanyak di Setiabudi, Kebayoran Baru, Tanah Abang, Menteng, Grogol Petamburan,
-          dan Palmerah, sejalan dengan pusat industri kreatif menurut Sensus Ekonomi 2016 (Kurnia dkk., 2026).
+          untuk seluruh aset OpenStreetMap dan <span data-meta="moran_ovt">0,282</span> untuk aset non-kuliner
+          Overture Maps, keduanya dengan p ≤ 0,0001. Sel klaster tinggi (High-High) terbanyak berada di Setiabudi,
+          lalu Grogol Petamburan, Kebayoran Baru, Palmerah, Tanah Abang, dan Menteng. Setiabudi, Kebayoran Baru,
+          Tanah Abang, dan Menteng juga termasuk pusat industri kreatif menurut data perusahaan Sensus Ekonomi 2016
+          (Kurnia dkk., 2026).
         </p>
         <table class="tabel">
           <thead><tr><th>Skenario uji</th><th>Moran's I</th><th>p</th></tr></thead>
@@ -83,10 +85,11 @@
 
         <h3 style="font-size:21px;margin:34px 0 10px">2. Kuliner mendominasi, dan OpenStreetMap hanya mencatat sebagian aset</h3>
         <p class="intro" style="margin-bottom:20px">
-          Sekitar <span data-meta="pct_kuliner_ovt">85</span> persen aset kreatif adalah kafe dan restoran.
+          Sekitar <span data-meta="pct_kuliner_ovt">84</span> persen aset kreatif adalah kafe dan restoran.
           OpenStreetMap mencatat <span data-meta="aset_osm">2.917</span> aset, atau sekitar
-          <span data-meta="rasio_osm_ovt">12</span> persen dari <span data-meta="aset_ovt">25.320</span> aset di Overture Maps.
-          Karena itu ukuran akses di atlas ini memakai gabungan kedua sumber.
+          <span data-meta="rasio_osm_ovt">11,4</span> persen dari <span data-meta="aset_ovt">25.513</span> aset di Overture Maps.
+          Overture juga memuat entri ganda dan usang, jadi angka ini adalah rasio cakupan relatif, bukan tingkat
+          kelengkapan mutlak. Ukuran akses di atlas ini memakai gabungan kedua sumber.
         </p>
         <div class="batang">
           <div class="baris baris-3 kepala"><span>Subsektor</span><span></span><span class="kanan">Overture</span><span class="kanan">OSM</span></div>
@@ -103,14 +106,15 @@
           <span data-meta="kec_max">Kebayoran Baru</span>, tetapi hanya <span data-meta="akses_min">5,9</span> di
           <span data-meta="kec_min">Kalideres</span>. Sebanyak <span data-meta="rendah_jt">1,77</span> juta penduduk
           (<span data-meta="pct_rendah">16,1</span> persen) memiliki akses rendah, yaitu tanpa ruang kreatif publik
-          dalam 1,5 km atau dengan akses kurang dari separuh median kota
-          (<span data-meta="a_ref">29,2</span> per 100 ribu penduduk).
+          dalam 1,5 km atau dengan akses kurang dari separuh median kota. Median kota (berbobot penduduk) adalah
+          <span data-meta="a_ref">14,6</span> ruang kreatif publik per 100 ribu penduduk, sehingga ambang akses rendah
+          <span data-meta="ambang">7,3</span>.
         </p>
 
         <h3 style="font-size:21px;margin:34px 0 10px">4. Prioritas berada di pinggiran barat, utara, dan timur</h3>
         <p class="intro">
-          Enam kecamatan konsisten masuk sembilan besar pada sekurang-kurangnya 80 persen dari 48 skenario
-          sensitivity analysis (uji kepekaan): <span data-meta="utama">Cakung, Kalideres, Cengkareng, Cilincing, Cipayung, Tanjung Priok</span>.
+          Sebanyak <span data-meta="n_utama">6</span> kecamatan konsisten masuk sembilan besar pada sekurang-kurangnya 80 persen
+          dari <span data-meta="n_skenario">48</span> skenario sensitivity analysis (uji kepekaan): <span data-meta="utama">Cakung, Kalideres, Cengkareng, Cilincing, Cipayung, Tanjung Priok</span>.
           <span data-meta="lanjutan">Koja dan Ciracas</span> menjadi prioritas lanjutan. Hanya
           <span data-meta="halte_rendah">37</span> persen penduduk dengan akses rendah tinggal dalam 400 m dari halte,
           dibanding <span data-meta="halte_semua">66</span> persen seluruh penduduk.
@@ -118,10 +122,11 @@
 
         <h3 style="font-size:21px;margin:34px 0 10px">Aset kreatif mengikuti pusat kegiatan komersial</h3>
         <p class="intro">
-          Kenaikan 10 persen tempat usaha non-kreatif di suatu sel diikuti kenaikan sekitar
-          12,7 persen aset kreatif non-kuliner (elastisitas <span data-meta="elastisitas">1,27</span>,
-          negative binomial regression). Spesialisasi kreatif ada, tetapi lemah: Moran's I untuk pangsa aset
-          non-kuliner hanya <span data-meta="moran_pangsa">0,073</span>.
+          Kenaikan 1 persen tempat non-kreatif Overture di suatu sel diikuti kenaikan sekitar
+          <span data-meta="elastisitas">1,26</span> persen aset kreatif non-kuliner (elastisitas dari regresi
+          binomial negatif dengan kontrol penduduk). Spesialisasi kreatif ada, tetapi lemah: Moran's I untuk pangsa aset
+          non-kuliner (Empirical Bayes) hanya <span data-meta="moran_pangsa">0,064</span>
+          (p = <span data-meta="p_moran_pangsa">0,0015</span>).
         </p>
       </div>
     </div>
@@ -237,20 +242,25 @@
     <p class="intro">
       Dipilih dengan maximal covering location problem (MCLP; memaksimalkan jumlah penduduk yang terjangkau)
       dari pasar, balai warga, dan kantor pemerintahan di OpenStreetMap, dengan radius layanan 1,5 km.
-      Kesembilan lokasi menjangkau <span data-meta="mclp_cakupan">48,9</span> persen penduduk dengan akses rendah,
-      sekitar <span data-meta="mclp_warga">853</span> ribu jiwa.
+      Kesembilan lokasi menjangkau sekitar <span data-meta="mclp_warga">849</span> ribu jiwa, yaitu
+      <span data-meta="mclp_cakupan">48,8</span> persen penduduk dengan akses rendah di sel dengan data memadai, atau
+      <span data-meta="mclp_cakupan_semua">48,1</span> persen dari seluruh penduduk dengan akses rendah. Angka ini peka
+      terhadap radius layanan: sekitar <span data-meta="mclp_r1000">23</span> persen bila radiusnya 1 km dan
+      <span data-meta="mclp_r2500">87</span> persen bila 2,5 km (median 16 skenario). Kecamatan prioritas yang belum
+      terjangkau satu pun lokasi: <span data-meta="tak_terjangkau">Cipayung, Tanjung Priok, dan Ciracas</span>.
     </p>
     <div class="tabel-lokasi-wadah">
       <table class="tabel">
-        <thead><tr><th>No</th><th class="kiri">Kecamatan</th><th class="kiri">Lokasi usulan</th><th class="kanan">Penduduk terjangkau</th>
+        <thead><tr><th>No</th><th class="kiri">Kecamatan</th><th class="kiri">Lokasi usulan</th><th class="kanan">Tambahan penduduk terjangkau</th>
           <th class="kanan">Ke halte</th><th class="kanan">Ke stasiun</th></tr></thead>
         <tbody id="tabel-lokasi"></tbody>
       </table>
     </div>
     <p class="klik-petunjuk">Klik baris untuk interpretasi tiap lokasi usulan</p>
     <p class="catatan-kecil">
-      Lokasi usulan adalah fasilitas terdekat di data OpenStreetMap. Gedung final ditetapkan melalui verifikasi
-      lapangan. Jarak ke halte lebih dari 850 m ditandai warna.
+      Lokasi usulan adalah kandidat di data OpenStreetMap dan dibaca sebagai zona layanan. Nama kandidat belum
+      diverifikasi; gedung final ditetapkan melalui verifikasi lapangan. Kolom penduduk terjangkau menghitung tambahan
+      di luar yang sudah terjangkau lokasi sebelumnya. Jarak ke halte lebih dari 850 m ditandai warna.
     </p>
   </div>
 </section>
@@ -277,13 +287,23 @@
     <p class="intro" style="margin-top:16px">
       Keterbatasan: ruang kreatif informal seperti sanggar dan kampung kreatif belum tercatat di kedua sumber;
       Overture masih memuat sebagian entri ganda; jarak dihitung sebagai garis lurus; dan data penduduk Jakarta
-      Utara memakai proyeksi BPS, sementara kota lain memakai registrasi Disdukcapil. Verifikasi lapangan, Potensi
-      Desa (Podes), dan Sensus Ekonomi 2026 dapat melengkapi atlas ini.
+      Utara memakai proyeksi BPS, sementara kota lain memakai registrasi Disdukcapil. Cek manual atas
+      <span data-meta="musik_sampel">100</span> sampel venue musik Overture menemukan
+      <span data-meta="musik_keliru">53</span> persen entri bukan ruang kreatif. Karena itu jumlah penduduk dengan akses
+      rendah dibaca sebagai rentang <span data-meta="rendah_jt">1,77</span> sampai
+      <span data-meta="rendah_tanpa_musik_jt">2,19</span> juta jiwa (tanpa kategori venue musik), dan cakupan sembilan
+      lokasi usulan sebagai rentang <span data-meta="mclp_tanpa_musik">42,6</span> sampai
+      <span data-meta="mclp_cakupan">48,8</span> persen. Verifikasi lapangan, Potensi Desa (Podes), dan Sensus
+      Ekonomi 2026 dapat melengkapi atlas ini.
     </p>
     <p class="intro" style="margin-top:16px">
-      Seluruh analisis memakai data berlisensi terbuka dan dapat dijalankan ulang. Notebook, tabel, dan catatan
-      asal data (provenance) tersedia di
-      <a href="https://github.com/barata90/atlas-ekraf-jakarta" rel="noopener">repositori</a>.
+      Seluruh analisis memakai data berlisensi terbuka dan dapat dijalankan ulang. Angka di atlas ini berasal dari
+      run notebook Tahap 3 tanggal <span data-meta="run">27 September 2026</span>.
+      <a href="https://github.com/barata90/atlas-ekraf-jakarta/tree/main/notebooks" rel="noopener">Notebook</a>,
+      <a href="https://github.com/barata90/atlas-ekraf-jakarta/tree/main/outputs/revisi/tables" rel="noopener">tabel</a>,
+      <a href="https://github.com/barata90/atlas-ekraf-jakarta/tree/main/outputs/revisi/figures" rel="noopener">gambar</a>,
+      serta <a href="https://github.com/barata90/atlas-ekraf-jakarta/tree/main/data" rel="noopener">data dan catatan
+      asal data (provenance)</a> tersedia di repositori.
     </p>
   </div>
 </section>

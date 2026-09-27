@@ -227,6 +227,17 @@
   /* ------------------------------------------------------------
      ANGKA DI TEKS
      ------------------------------------------------------------ */
+  const BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September",
+    "Oktober", "November", "Desember"];
+  function tanggal(iso) {
+    const [y, m, d] = String(iso).split("-").map(Number);
+    return `${d} ${BULAN[m - 1]} ${y}`;
+  }
+  function daftar(arr) {
+    if (!arr || !arr.length) return "-";
+    return arr.length === 1 ? arr[0] : arr.slice(0, -1).join(", ") + ", dan " + arr[arr.length - 1];
+  }
+
   function isiMeta() {
     const f = {
       rendah_jt: () => n(M.rendah / 1e6, 2),
@@ -239,25 +250,38 @@
       kec_max: () => M.kec_max,
       kec_min: () => M.kec_min,
       a_ref: () => n(M.a_ref, 1),
+      ambang: () => n(M.ambang, 1),
+      n_skenario: () => n(M.n_skenario),
       n_utama: () => n(M.utama.length),
       utama: () => M.utama.join(", "),
       lanjutan: () => M.lanjutan.join(" dan "),
       aset_osm: () => n(M.aset_osm),
       aset_ovt: () => n(M.aset_ovt),
-      rasio_osm_ovt: () => n(M.rasio_osm_ovt, 0),
+      rasio_osm_ovt: () => n(M.rasio_osm_ovt, 1),
       pct_kuliner_ovt: () => n(M.pct_kuliner_ovt, 0),
       pct_kuliner_osm: () => n(M.pct_kuliner_osm, 0),
       moran_osm: () => n(M.moran_osm, 3),
       moran_ovt: () => n(M.moran_ovt, 3),
+      moran_osm_nk: () => n(M.moran_osm_nk, 3),
       hh: () => n(M.hh), ll: () => n(M.ll),
       n_klaster: () => n(M.n_klaster),
       mclp_cakupan: () => n(M.mclp_cakupan, 1),
       mclp_warga: () => n(M.mclp_warga / 1e3, 0),
+      mclp_cakupan_semua: () => n(M.mclp_cakupan_semua, 1),
+      mclp_r1000: () => n(M.mclp_r1000, 0),
+      mclp_r2500: () => n(M.mclp_r2500, 0),
+      tak_terjangkau: () => daftar(M.prioritas_tak_terjangkau),
+      rendah_tanpa_musik_jt: () => n(M.rendah_tanpa_musik / 1e6, 2),
+      mclp_tanpa_musik: () => n(M.mclp_tanpa_musik, 1),
+      musik_keliru: () => n(M.musik_keliru, 0),
+      musik_sampel: () => n(M.musik_sampel),
+      run: () => tanggal(M.run),
       halte_rendah: () => n(M.halte_rendah, 0),
       halte_semua: () => n(M.halte_semua, 0),
       pop_jt: () => n(M.pop / 1e6, 2),
       elastisitas: () => n(M.elastisitas, 2),
       moran_pangsa: () => n(M.moran_pangsa, 3),
+      p_moran_pangsa: () => n(M.p_moran_pangsa, 4),
       pangsa_kota: () => n(M.pangsa_kota_ovt, 1),
       tanpa_nk: () => n(M.tanpa_nonkul_gabungan),
       lit_pusel: () => n(M.pangsa_literasi_pusel, 1),
@@ -335,6 +359,7 @@
           <dt>Akses per 100 ribu</dt><dd>${n(k.akses, 1)}</dd>
           <dt>Akses rendah</dt><dd>${NARASI.ribuan(k.rendah)}</dd>
           <dt>Kekurangan ruang</dt><dd>±${n(k.kurang, 0)}</dd>
+          <dt>Terjangkau simpul</dt><dd>${k.simpul === null || k.simpul === undefined ? "-" : n(k.simpul, 0) + "%"}</dd>
           <dt>Dekat halte</dt><dd>${n(k.halte_rendah, 0)}%</dd>
         </dl>
         <p style="font-size:14px;margin:14px 0 0;color:var(--kabut)">${aksi}</p>

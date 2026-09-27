@@ -96,9 +96,12 @@ const INTERP = (function () {
         ? "Cakupan OSM masih tipis, sehingga penggabungan kedua sumber tetap diperlukan."
         : "Cakupan OSM pada subsektor ini termasuk relatif lengkap dibanding subsektor lain.";
 
-    const p3 = s.kat === "Kuliner"
+    let p3 = s.kat === "Kuliner"
       ? `Sebagai subsektor kuliner, ${s.nama.toLowerCase()} ikut menegaskan dominasi kuliner yang mencapai sekitar ${n(M.pct_kuliner_ovt, 0)} persen dari seluruh aset kreatif Jakarta.`
-      : `Sebagai subsektor non-kuliner, jumlahnya jauh lebih kecil dibanding kuliner — cerminan ruang kreatif non-kuliner yang masih terbatas dan menjadi fokus penguatan.`;
+      : "Sebagai subsektor non-kuliner, jumlahnya jauh lebih kecil daripada kuliner. Aset non-kuliner seperti inilah yang menjadi fokus penguatan.";
+    if (s.nama === "Musik" && M.musik_keliru !== null && M.musik_keliru !== undefined) {
+      p3 += ` Kategori venue musik Overture (${n(M.musik_venue_ovt)} titik) perlu dibaca hati-hati: cek manual atas ${n(M.musik_sampel)} sampel acak menemukan ${n(M.musik_keliru, 0)} persen entri bukan ruang kreatif (selang kepercayaan 95 persen: ${n(M.musik_keliru_bawah, 1)} sampai ${n(M.musik_keliru_atas, 1)} persen).`;
+    }
 
     buka({
       kategori: "Interpretasi · Subsektor",
@@ -132,7 +135,7 @@ const INTERP = (function () {
 
     buka({
       kategori: "Interpretasi · Klaster",
-      judul: `Klaster ${rank} — ${c.kec}`,
+      judul: `Klaster ${rank}: ${c.kec}`,
       sub: `${n(c.poi)} aset · ${ragam}`,
       warna: "teal",
       stat: [
@@ -175,12 +178,17 @@ const INTERP = (function () {
     const pTeks = s.p <= 0.00011 ? "≤ 0,0001" : n(s.p, 4);
 
     const p1 = `Pada skenario "<b>${s.skenario}</b>", Moran's I bernilai <b>${n(s.I, 3)}</b>. Nilai positif ini menandakan ${kuat}: sel yang padat aset cenderung berdekatan dengan sel padat lain, bukan tersebar acak.`;
-    const p2 = `Nilai p sebesar ${pTeks} dari uji permutasi (9.999 kali) berarti pola ini hampir pasti bukan kebetulan.`;
+    const p2 = s.p <= 0.00011
+      ? "Dari 9.999 permutasi acak, tidak satu pun menghasilkan Moran's I setinggi nilai teramati. Nilai p karena itu dilaporkan sebagai ≤ 0,0001, yaitu batas terkecil yang dapat dicapai uji ini, dan hipotesis sebaran acak ditolak."
+      : `Nilai p dari uji permutasi (9.999 kali) adalah ${pTeks}.`;
 
     let p3 = `Uji LISA pada skenario ini menemukan ${n(s.hh)} sel klaster tinggi (High-High) dan ${n(s.ll)} sel klaster rendah (Low-Low) dari ${n(s.n)} sel.`;
     if (s.skenario !== dasar.skenario) {
       const arah = s.I >= dasar.I ? "lebih tinggi" : "lebih rendah";
-      p3 += ` Dibanding skenario utama (Moran's I ${n(dasar.I, 3)}), nilainya ${arah}. Karena hasilnya tetap signifikan di semua skenario, kesimpulan bahwa aset kreatif mengelompok terbukti kokoh terhadap perubahan asumsi.`;
+      p3 += ` Dibanding skenario utama (Moran's I ${n(dasar.I, 3)}), nilainya ${arah}. Moran's I positif dan signifikan di semua skenario, sehingga kesimpulan bahwa aset kreatif mengelompok tidak bergantung pada pilihan resolusi, transformasi, atau sumber data.`;
+      if (s.skenario.startsWith("OSM, tanpa kuliner") && s.ll === 0) {
+        p3 += " Jumlah sel Low-Low menjadi nol karena sebagian besar sel tanpa kuliner bernilai nol; angka ini tidak dapat dipakai sebagai ukuran ketimpangan.";
+      }
     } else {
       p3 += " Ini adalah skenario utama yang menjadi acuan pembanding bagi skenario lainnya.";
     }
@@ -202,11 +210,14 @@ const INTERP = (function () {
 
   /* ---------- BARIS TABEL LOKASI USULAN ---------- */
   function lokasi(z, pemicu) {
-    const p1 = `Lokasi usulan ke-${z.no} adalah <b>${z.nama}</b> (${z.jenis}) di Kecamatan ${z.kec}. Lokasi dipilih dengan MCLP (maximal covering location problem) sebagai fasilitas publik terdekat yang menjangkau penduduk akses rendah paling banyak.`;
-    const p2 = `Simpul Kreatif di titik ini menjangkau sekitar <b>${ribuan(z.warga)} penduduk</b> berakses rendah dalam radius layanan 1,5 km. Bersama lokasi sebelumnya, cakupan kumulatifnya mencapai ${n(z.kumulatif, 1)} persen dari seluruh penduduk akses rendah.`;
+    let p1 = `Lokasi usulan ke-${z.no} adalah <b>${z.nama}</b> (${z.jenis}) di Kecamatan ${z.kec}. Titik ini dipilih dengan MCLP (maximal covering location problem) dari kandidat pasar, balai warga, dan kantor pemerintahan di OpenStreetMap, sebagai kandidat yang pada urutan ke-${z.no} menambah penduduk akses rendah terjangkau paling banyak.`;
+    if (z.verifikasi) {
+      p1 += " Nama kandidat di OpenStreetMap tidak menyerupai fasilitas publik, sehingga titik ini dibaca sebagai zona layanan; gedungnya dipilih melalui verifikasi lapangan.";
+    }
+    const p2 = `Simpul Kreatif di titik ini menambah sekitar <b>${ribuan(z.warga)} penduduk</b> berakses rendah yang terjangkau dalam radius layanan 1,5 km, di luar yang sudah terjangkau lokasi sebelumnya. Bersama lokasi sebelumnya, cakupan kumulatifnya mencapai ${n(z.kumulatif, 1)} persen dari penduduk akses rendah di sel dengan data memadai.`;
 
     let p3 = z.halte > 850
-      ? `Jaraknya ${n(z.halte)} m dari halte terdekat — lebih dari 850 m — sehingga simpul ini perlu didukung layanan pengumpan (feeder) agar mudah dijangkau.`
+      ? `Jaraknya ${n(z.halte)} m dari halte terdekat (lebih dari 850 m), sehingga simpul ini perlu didukung layanan pengumpan (feeder) agar mudah dijangkau.`
       : `Berada ${n(z.halte)} m dari halte terdekat, lokasi ini relatif mudah dicapai dengan transportasi umum.`;
     p3 += ` Stasiun terdekat berjarak ${n(z.stasiun)} m.`;
 
@@ -216,7 +227,7 @@ const INTERP = (function () {
       sub: `${z.jenis} · ${z.kec}`,
       warna: "coral",
       stat: [
-        ["Penduduk terjangkau", ribuan(z.warga)],
+        ["Tambahan terjangkau", ribuan(z.warga)],
         ["Cakupan kumulatif", n(z.kumulatif, 1) + "%"],
         ["Ke halte", n(z.halte) + " m"],
         ["Ke stasiun", n(z.stasiun) + " m"],
@@ -238,8 +249,8 @@ const INTERP = (function () {
       ],
       paragraf: () => [
         "Peta ini menampilkan jumlah aset kreatif per km² pada grid heksagon H3. Warna makin gelap-merah menandakan konsentrasi yang makin tinggi.",
-        `Konsentrasi tertinggi membentuk koridor di pusat dan selatan kota — Setiabudi, Kebayoran Baru, Tanah Abang, dan Menteng — sejalan dengan Moran's I <b>${n(M.moran_osm, 3)}</b> yang menegaskan adanya pengelompokan spasial.`,
-        "Sementara itu pinggiran barat, utara, dan timur cenderung terang, menandakan aset kreatif yang jarang. Pola inilah yang mendasari analisis akses dan penetapan prioritas.",
+        `Konsentrasi tertinggi membentuk koridor di pusat dan selatan kota, antara lain Setiabudi, Kebayoran Baru, Tanah Abang, dan Menteng. Moran's I <b>${n(M.moran_osm, 3)}</b> (p ≤ 0,0001) menunjukkan bahwa sel yang padat aset cenderung berdekatan.`,
+        "Pinggiran barat, utara, dan timur cenderung terang, menandakan aset kreatif yang jarang. Peta ini memakai data OpenStreetMap, yang hanya mencatat sebagian aset; karena itu analisis akses dan prioritas memakai gabungan OpenStreetMap dan Overture Maps.",
       ],
     },
     lisa: {
@@ -253,8 +264,8 @@ const INTERP = (function () {
       ],
       paragraf: () => [
         "LISA (Local Indicators of Spatial Association) memilah tiap sel menjadi klaster High-High, Low-Low, atau bukan klaster, dengan koreksi FDR (false discovery rate) 5 persen.",
-        `Terdapat <b>${n(M.hh)} sel High-High</b>: sel padat aset yang dikelilingi sel padat — inti kawasan kreatif. Sebaliknya, <b>${n(M.ll)} sel Low-Low</b> menandai kawasan luas yang sama-sama sepi aset.`,
-        "Dominannya sel Low-Low di pinggiran memperkuat temuan bahwa ketiadaan aset bersifat spasial, bukan acak, sehingga intervensi sebaiknya menyasar kawasan, bukan titik yang terpisah-pisah.",
+        `Terdapat <b>${n(M.hh)} sel High-High</b>, yaitu sel padat aset yang dikelilingi sel padat dan menjadi inti kawasan kreatif. Sebaliknya, <b>${n(M.ll)} sel Low-Low</b> menandai kawasan yang sama-sama sepi aset.`,
+        "Sebagian sel Low-Low berada di tepi batas kota dan dapat dipengaruhi aset di Bodetabek yang tidak ikut diambil. Karena itu prioritas ditetapkan dengan ukuran akses berbasis penduduk yang memakai zona penyangga 3 km, bukan dari jumlah sel Low-Low.",
       ],
     },
     akses: {
@@ -269,7 +280,7 @@ const INTERP = (function () {
       paragraf: () => [
         "Peta ini memakai 2SFCA (two-step floating catchment area) untuk mengukur porsi penduduk tiap sel yang berakses rendah ke ruang kreatif publik. Warna makin merah berarti makin banyak penduduk yang kekurangan akses.",
         `Sekitar <b>${ribuan(M.rendah)} penduduk</b> (${n(M.pct_rendah, 1)} persen) berakses rendah. Aksesnya sangat timpang: ${n(M.akses_max, 1)} per 100 ribu di ${M.kec_max}, tetapi hanya ${n(M.akses_min, 1)} di ${M.kec_min}.`,
-        `Bintang menandai sembilan lokasi usulan Simpul Kreatif yang, dengan MCLP, menjangkau ${n(M.mclp_cakupan, 1)} persen penduduk akses rendah — sekitar ${n(M.mclp_warga / 1e3, 0)} ribu jiwa.`,
+        `Bintang menandai sembilan lokasi usulan Simpul Kreatif hasil MCLP. Kesembilannya menjangkau sekitar ${n(M.mclp_warga / 1e3, 0)} ribu jiwa, atau ${n(M.mclp_cakupan, 1)} persen penduduk akses rendah di sel dengan data memadai (${n(M.mclp_cakupan_semua, 1)} persen dari seluruh penduduk akses rendah).`,
       ],
     },
   };
@@ -305,7 +316,7 @@ const INTERP = (function () {
     baris.push("");
     (d.paragraf || []).forEach((p) => baris.push(String(p).replace(/<[^>]+>/g, "")));
     baris.push("");
-    baris.push("— Atlas Ekonomi Kreatif Jakarta · Jakarta Economic Forum 2026");
+    baris.push("Atlas Ekonomi Kreatif Jakarta · Jakarta Economic Forum 2026");
     return baris.join("\n");
   }
 
