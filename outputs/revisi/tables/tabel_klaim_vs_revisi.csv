@@ -1,0 +1,13 @@
+no,klaim_naskah,hasil_revisi,status
+1,"Moran's I res 8 = 0,369, p = 0,001 ('tingkat kepercayaan 99,9%')","Moran's I = 0,368, p ≤ 0,0001 (9.999 permutasi, 42 kecamatan daratan, densitas per luas daratan)","Arah sama, angka dan pelaporan p dikoreksi"
+2,61 sel HH dan 186 sel LL,"α mentah: 65 HH, 189 LL. FDR: 31 HH, 114 LL. Gi* dingin (FDR): 121",Dikoreksi; gunakan angka FDR
+3,"LL naik ke 335 tanpa kuliner, kuliner 'menyamarkan' ketimpangan","Sel nol naik 49,1% → 79,7%; LL α mentah 189 → 0, FDR 114 → 0",Klaim ditarik; jumlah LL mengikuti porsi sel nol
+4,"Pada res 7 pola 'sedikit menguat' tanpa kuliner (0,434 vs 0,425)","0,447 vs 0,435; selisih 0,16 SD acak",Klaim ditarik
+5,Pengelompokan mengindikasikan aglomerasi Marshallian,"[Overture] Moran's I pangsa aset non-kuliner (EB) = 0,064, p = 0,0015; residual setelah kontrol titik non-kreatif & penduduk: I = 0,076, p ≤ 0,0001","Dilunakkan: konsentrasi mengikuti pusat komersial, dengan spesialisasi kreatif lemah"
+6,"Entropi 8 kecamatan IKIK tertinggi 0,330 vs 9 prioritas 0,111 ('tiga kali lebih rendah')","Pangsa non-kuliner 13,8% (11,9%–15,8%) vs 10,1% (7,2%–14,1%); kecamatan prioritas cukup data untuk rarefaksi: 5/9. Overture: 17,5% vs 14,4%","Arah sama, besaran jauh di bawah 'tiga kali'; pakai angka Overture + CI"
+7,Sembilan kecamatan prioritas (Johar Baru … Kembangan),"Prioritas utama: Cakung, Kalideres, Cengkareng, Cilincing, Cipayung, Tanjung Priok; lanjutan: Koja, Ciracas; beririsan dengan naskah: 1/9",Daftar diganti hasil revisi
+8,Sembilan kecamatan prioritas dihuni 2.489.452 jiwa,"2.408.191 jiwa (WorldPop dikalibrasi data resmi, penjumlahan piksel per poligon)",Dikoreksi
+9,"Gurun kreatif mencakup 21,4% wilayah (186 sel LL)","Tanpa aset non-kuliner dalam 1.500 m: 2.219 jiwa (0,0%; OSM saja 25,8%). Dengan akses rendah ke ruang kreatif publik: 1.766.634 jiwa (16,1%)",Definisi diganti ukuran berbasis penduduk
+10,Kedekatan transit (≤400 m) adalah kabar baik untuk kecamatan prioritas,"65,7% seluruh penduduk ≤400 m dari halte; di kecamatan prioritas revisi porsinya 22%–68%",Transit dipindah menjadi kolom kelayakan terpisah
+11,Duren Sawit dan Johar Baru tanpa satu pun aset non-kuliner,"Titik-dalam-poligon (Juli): Duren Sawit 0, Johar Baru 0",Tetap
+12,Pola konsentrasi aset kreatif di pusat kota (berbasis OSM),"Data independen Overture: Moran's I aset non-kuliner = 0,282, p ≤ 0,0001; OSM menangkap sekitar 11% aset kreatif Overture",Diperkuat oleh sumber independen

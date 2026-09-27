@@ -1,0 +1,4 @@
+ukuran,jumlah,n,porsi,bawah_95,atas_95,perkiraan_titik_bawah,perkiraan_titik_atas
+longgar: hanya 'bukan ruang kreatif',53,100,0.53,0.4329,0.6249,194,281
+ketat: 'bukan ruang kreatif' + 'ruang serbaguna',54,100,0.54,0.4426,0.6344,199,285
+batas atas: ketat + 'tidak jelas',54,100,0.54,0.4426,0.6344,199,285

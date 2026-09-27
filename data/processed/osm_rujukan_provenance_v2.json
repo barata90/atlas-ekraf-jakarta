@@ -1,0 +1,17 @@
+{
+  "accessed_utc": "2026-09-25T00:18:48.048788+00:00",
+  "sumber": "Overpass API",
+  "mirrors": [
+    "https://overpass-api.de/api",
+    "https://overpass.private.coffee/api",
+    "https://maps.mail.ru/osm/tools/overpass/api"
+  ],
+  "n_tile": 43,
+  "kueri": "nwr[amenity|shop|office|craft|tourism], out center",
+  "kunci_gagal": [],
+  "n_fitur": 37133,
+  "n_di_jakarta": 33446,
+  "cincin_m": 3000,
+  "lisensi": "ODbL - (c) OpenStreetMap contributors",
+  "wilayah": "42 kecamatan daratan Provinsi Daerah Khusus Jakarta + cincin 3 km"
+}
