@@ -58,8 +58,6 @@ scripts/potong_peta_web.py    memotong bidang peta dari Gambar R1, R2, R5 ke fig
 | `02_analisis_spasial_ekraf_jakarta.ipynb` | Tahap 2: analisis awal (Moran's I, LISA, Gi*, entropi, DBSCAN, IKIK) dan partisi batas kecamatan. Sebagian klaimnya dikoreksi di Tahap 3 (`outputs/revisi/tables/tabel_klaim_vs_revisi.csv`) |
 | `03_revisi_analisis_ekraf_jakarta_v6.ipynb` | Tahap 3: revisi dan sumber seluruh angka di naskah final, slide, dan aplikasi web |
 
-Tabel `outputs/revisi/tables/tabel_angka_final_naskah_slide.csv` membandingkan angka hasil run dengan angka yang tertulis di naskah dan slide.
-
 ## Menjalankan ulang
 
 1. Siapkan lingkungan Python dengan paket `numpy`, `pandas`, `geopandas`, `rasterio`, `pyproj`, `shapely`, `h3`, `scipy`, `scikit-learn`, `libpysal`, `esda`, `statsmodels`, `osmnx`, `matplotlib`, `mapclassify`, `pyarrow`, dan `jupyterlab`. Keluaran notebook mencatat geopandas 1.1.3 dan h3 4.5.0 (Tahap 3) serta osmnx 2.1.1 (Tahap 1). Paket `overturemaps` dan `duckdb` hanya dibutuhkan bila data Overture diunduh ulang.
@@ -76,27 +74,7 @@ python scripts/export_web_data.py --tabel outputs/revisi/tables \
 python scripts/potong_peta_web.py
 ```
 
-Skrip ekspor mengambil semua angka dari tabel dan `hasil_tahap3.json`, tanpa angka cadangan yang ditulis tangan. Skrip berhenti dengan pesan galat bila tabel dan JSON berasal dari run yang berbeda (misalnya jumlah aset Overture, Moran's I, daftar prioritas, atau cakupan simpul tidak sama).
-
-## Perubahan dari run 25 September 2026
-
-Aplikasi web, README, dan slide sebelumnya memakai run 25 September 2026. Run itu menghitung 1.710 aset fesyen Overture, sedangkan run final menghitung 1.903. Selisih 193 titik ini sama dengan selisih total aset Overture (25.320 menjadi 25.513) dan menggeser ukuran yang memakai aset non-kuliner Overture. Daftar prioritas, akses ruang kreatif publik per kecamatan, dan kekurangan ruang tidak berubah.
-
-| Angka | Run 25 September | Run final 27 September |
-|---|---|---|
-| Aset kreatif Overture | 25.320 | 25.513 |
-| Aset OSM terhadap Overture | ±12 persen | 11,4 persen |
-| Pangsa kuliner Overture | 85 persen | 84 persen |
-| Moran's I aset non-kuliner Overture | 0,291 | 0,282 |
-| Elastisitas terhadap tempat non-kreatif Overture | 1,27 | 1,26 |
-| Moran's I pangsa non-kuliner (Empirical Bayes, Overture) | 0,073 (p = 0,0002) | 0,064 (p = 0,0015) |
-| Pangsa non-kuliner Overture, kota | 15,2 persen | 15,9 persen |
-| Penduduk terjangkau sembilan simpul | ±853 ribu (48,9 persen) | 848.937 (48,8 persen; 48,1 persen dari seluruh penduduk akses rendah) |
-| Penduduk terjangkau Pasar Semper | 112,3 ribu | 107,9 ribu |
-
-Frekuensi masuk sembilan besar bergeser sedikit tanpa mengubah status (Cengkareng 100 menjadi 96 persen, Koja 75 menjadi 73 persen, Ciracas 65 menjadi 69 persen). Status keragaman Overture enam kecamatan juga berubah: Kalideres, Koja, Penjaringan, Kebayoran Baru, dan Jatinegara kini setara pangsa kota, sedangkan Kelapa Gading di bawah pangsa kota.
-
-Profil kecamatan di aplikasi web sebelumnya membandingkan akses tiap kecamatan dengan median 29,2. Median hasil run adalah 14,6; sebanyak 79,9 persen penduduk memiliki akses di bawah 29,2, sehingga angka itu tidak mungkin median berbobot penduduk. Dengan median yang benar, posisi 33 dari 42 kecamatan terhadap median kota berubah. Contohnya Cipayung (28,9 per 100 ribu), yang sebelumnya disebut di bawah median, kini tercatat sekitar dua kali median kota.
+Skrip ekspor mengambil semua angka dari tabel dan `hasil_tahap3.json`, dan berhenti dengan pesan galat bila tabel dan JSON berasal dari run yang berbeda (misalnya jumlah aset Overture, Moran's I, daftar prioritas, atau cakupan simpul tidak sama).
 
 ## Lisensi
 
