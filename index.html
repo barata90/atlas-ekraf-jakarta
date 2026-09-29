@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atlas Ekonomi Kreatif Jakarta: Sebaran Aset dan Akses Ruang Kreatif Publik</title>
+<meta name="description" content="Atlas spasial ekonomi kreatif Jakarta: sebaran aset kreatif dari OpenStreetMap dan Overture Maps, akses penduduk ke ruang kreatif publik di 42 kecamatan, dan usulan lokasi Simpul Kreatif.">
+<meta property="og:title" content="Atlas Ekonomi Kreatif Jakarta">
+<meta property="og:description" content="Akses penduduk Jakarta ke ruang kreatif publik berbeda hingga 15 kali lipat antarkecamatan.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500;6..72,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<!-- ============================ HERO ============================ -->
+<header class="wrap hero">
+  <div>
+    <p class="eyebrow">Atlas spasial · Jakarta · 2026</p>
+    <h1>Aset kreatif Jakarta terpusat di tengah kota.<em>Akses penduduknya belum merata.</em></h1>
+    <p class="lead">
+      Atlas ini memetakan aset ekonomi kreatif Jakarta dari dua sumber data terbuka,
+      <strong>OpenStreetMap</strong> dan <strong>Overture Maps</strong>, lalu mengukur seberapa mudah penduduk
+      tiap kecamatan menjangkau <strong>ruang kreatif publik</strong>: panggung, galeri, bioskop, venue musik,
+      perpustakaan, ruang kerja bersama, dan sejenisnya.
+    </p>
+
+    <div class="angka-hero">
+      <div><b class="mono" data-meta="rasio_akses_x">15×</b><span>selisih akses per kapita antarkecamatan</span></div>
+      <div><b class="mono" data-meta="rendah_jt_label">1,77 jt</b><span>penduduk dengan akses rendah</span></div>
+      <div><b class="mono" data-meta="n_utama">6</b><span>kecamatan prioritas utama</span></div>
+    </div>
+
+    <p class="kredit">
+      Data: OpenStreetMap (ODbL), Overture Maps (CDLA Permissive 2.0), WorldPop (CC-BY 4.0),
+      penduduk kecamatan Disdukcapil dan BPS · diakses Juli dan September 2026<br>
+      Metode: Moran's I · LISA · DBSCAN · 2SFCA · MCLP
+    </p>
+  </div>
+
+  <div class="peta-panel">
+    <div class="metrik" id="metrik-hero" role="group" aria-label="Pilih indikator peta"></div>
+    <svg id="tilegram" viewBox="0 0 360 205" role="img"
+         aria-label="Peta skematik 42 kecamatan Jakarta dalam susunan heksagon"></svg>
+    <div class="legenda">
+      <span id="leg-min">rendah</span>
+      <div class="skala" id="leg-skala"></div>
+      <span id="leg-max">tinggi</span>
+    </div>
+    <p class="ket-metrik" id="leg-ket"></p>
+    <p class="kredit" style="margin-top:12px">
+      Peta skematik: setiap heksagon mewakili satu kecamatan, disusun mengikuti letak geografisnya.
+      Peta sebenarnya ada di bagian <a href="#peta">Peta</a>.
+    </p>
+  </div>
+</header>
+
+<!-- ======================== TEMUAN UTAMA ======================== -->
+<section id="temuan">
+  <div class="wrap">
+    <p class="eyebrow">Temuan</p>
+    <h2>Empat temuan utama</h2>
+
+    <div class="jelajah" style="margin-top:38px">
+      <div>
+        <h3 style="font-size:21px;margin-bottom:10px">1. Aset kreatif terkonsentrasi di koridor pusat dan selatan</h3>
+        <p class="intro" style="margin-bottom:20px">
+          Moran's I (ukuran autokorelasi spasial) kepadatan aset bernilai <span data-meta="moran_osm">0,368</span>
+          untuk seluruh aset OpenStreetMap dan <span data-meta="moran_ovt">0,282</span> untuk aset non-kuliner
+          Overture Maps, keduanya dengan p ≤ 0,0001. Sel klaster tinggi (High-High) terbanyak berada di Setiabudi,
+          lalu Grogol Petamburan, Kebayoran Baru, Palmerah, Tanah Abang, dan Menteng. Setiabudi, Kebayoran Baru,
+          Tanah Abang, dan Menteng juga termasuk pusat industri kreatif menurut data perusahaan Sensus Ekonomi 2016
+          (Kurnia dkk., 2026).
+        </p>
+        <table class="tabel">
+          <thead><tr><th>Skenario uji</th><th>Moran's I</th><th>p</th></tr></thead>
+          <tbody id="tabel-sensitivitas"></tbody>
+        </table>
+        <p class="klik-petunjuk">Klik baris untuk interpretasi tiap skenario</p>
+        <p class="kredit" style="margin-top:14px">
+          Nilai p dari uji permutasi (9.999 kali). Grid H3 resolusi 8 berukuran ±0,74 km² per sel.
+        </p>
+
+        <h3 style="font-size:21px;margin:34px 0 10px">2. Kuliner mendominasi, dan OpenStreetMap hanya mencatat sebagian aset</h3>
+        <p class="intro" style="margin-bottom:20px">
+          Sekitar <span data-meta="pct_kuliner_ovt">84</span> persen aset kreatif adalah kafe dan restoran.
+          OpenStreetMap mencatat <span data-meta="aset_osm">2.917</span> aset, atau sekitar
+          <span data-meta="rasio_osm_ovt">11,4</span> persen dari <span data-meta="aset_ovt">25.513</span> aset di Overture Maps.
+          Overture juga memuat entri ganda dan usang, jadi angka ini adalah rasio cakupan relatif, bukan tingkat
+          kelengkapan mutlak. Ukuran akses di atlas ini memakai gabungan kedua sumber.
+        </p>
+        <div class="batang">
+          <div class="baris baris-3 kepala"><span>Subsektor</span><span></span><span class="kanan">Overture</span><span class="kanan">OSM</span></div>
+        </div>
+        <div class="batang" id="batang-subsektor" style="margin-top:6px"></div>
+        <p class="klik-petunjuk">Klik salah satu batang untuk interpretasi otomatis</p>
+      </div>
+
+      <div>
+        <h3 style="font-size:21px;margin-bottom:10px">3. Akses ke ruang kreatif publik berbeda hingga <span data-meta="rasio_akses">15</span> kali lipat</h3>
+        <p class="intro">
+          Hampir semua penduduk memiliki toko atau studio kreatif dalam radius 1,5 km. Yang timpang adalah
+          ruang kreatif publik: <span data-meta="akses_max">90,1</span> per 100 ribu penduduk di
+          <span data-meta="kec_max">Kebayoran Baru</span>, tetapi hanya <span data-meta="akses_min">5,9</span> di
+          <span data-meta="kec_min">Kalideres</span>. Sebanyak <span data-meta="rendah_jt">1,77</span> juta penduduk
+          (<span data-meta="pct_rendah">16,1</span> persen) memiliki akses rendah, yaitu tanpa ruang kreatif publik
+          dalam 1,5 km atau dengan akses kurang dari separuh median kota. Median kota (berbobot penduduk) adalah
+          <span data-meta="a_ref">14,6</span> ruang kreatif publik per 100 ribu penduduk, sehingga ambang akses rendah
+          <span data-meta="ambang">7,3</span>.
+        </p>
+
+        <h3 style="font-size:21px;margin:34px 0 10px">4. Prioritas berada di pinggiran barat, utara, dan timur</h3>
+        <p class="intro">
+          Sebanyak <span data-meta="n_utama">6</span> kecamatan konsisten masuk sembilan besar pada sekurang-kurangnya 80 persen
+          dari <span data-meta="n_skenario">48</span> skenario sensitivity analysis (uji kepekaan): <span data-meta="utama">Cakung, Kalideres, Cengkareng, Cilincing, Cipayung, Tanjung Priok</span>.
+          <span data-meta="lanjutan">Koja dan Ciracas</span> menjadi prioritas lanjutan. Hanya
+          <span data-meta="halte_rendah">37</span> persen penduduk dengan akses rendah tinggal dalam 400 m dari halte,
+          dibanding <span data-meta="halte_semua">66</span> persen seluruh penduduk.
+        </p>
+
+        <h3 style="font-size:21px;margin:34px 0 10px">Aset kreatif mengikuti pusat kegiatan komersial</h3>
+        <p class="intro">
+          Kenaikan 1 persen tempat non-kreatif Overture di suatu sel diikuti kenaikan sekitar
+          <span data-meta="elastisitas">1,26</span> persen aset kreatif non-kuliner (elastisitas dari regresi
+          binomial negatif dengan kontrol penduduk). Spesialisasi kreatif ada, tetapi lemah: Moran's I untuk pangsa aset
+          non-kuliner (Empirical Bayes) hanya <span data-meta="moran_pangsa">0,064</span>
+          (p = <span data-meta="p_moran_pangsa">0,0015</span>).
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= PROFIL KECAMATAN ========================= -->
+<section id="jelajah">
+  <div class="wrap">
+    <p class="eyebrow">Profil kecamatan</p>
+    <h2>Cari kecamatan Anda</h2>
+    <p class="intro" style="margin-bottom:34px">
+      Klik heksagon atau ketik nama kecamatan. Profil setiap wilayah disusun otomatis dari angkanya sendiri
+      dan dibandingkan dengan angka kota.
+    </p>
+
+    <div class="jelajah">
+      <div>
+        <div class="metrik" id="metrik-jelajah" role="group" aria-label="Pilih indikator peta profil"></div>
+        <svg id="tilegram2" viewBox="0 0 360 205" role="img"
+             aria-label="Peta profil 42 kecamatan Jakarta"></svg>
+        <div class="legenda">
+          <span id="leg2-min">rendah</span>
+          <div class="skala" id="leg2-skala"></div>
+          <span id="leg2-max">tinggi</span>
+        </div>
+        <p class="ket-metrik" id="leg2-ket"></p>
+      </div>
+
+      <aside class="kartu-narasi" id="kartu" aria-live="polite">
+        <div class="cari">
+          <input type="text" id="cari" placeholder="Ketik nama kecamatan…" autocomplete="off" aria-label="Cari kecamatan">
+          <div class="saran" id="saran" hidden></div>
+        </div>
+        <span class="tag netral" id="k-tag">-</span>
+        <p class="nama" id="k-nama">Pilih kecamatan</p>
+        <p class="kota mono" id="k-kota">&nbsp;</p>
+        <div class="stat-baris" id="k-stat"></div>
+        <div id="k-narasi"></div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ========================== KLASTER ========================== -->
+<section id="klaster">
+  <div class="wrap">
+    <p class="eyebrow">Klaster aset kreatif</p>
+    <h2><span data-meta="n_klaster">34</span> klaster aset kreatif</h2>
+    <p class="intro" style="margin-bottom:34px">
+      DBSCAN (Density-Based Spatial Clustering of Applications with Noise; pengelompokan berbasis kepadatan titik)
+      menggabungkan aset yang saling berdekatan tanpa mengikuti batas administrasi. Radiusnya 400 meter,
+      kira-kira lima menit berjalan kaki. Data: OpenStreetMap. Klaster terbesar belum tentu paling beragam.
+    </p>
+    <div class="grid-klaster" id="grid-klaster"></div>
+    <p class="klik-petunjuk">Klik kartu klaster untuk interpretasi otomatis</p>
+  </div>
+</section>
+
+<!-- ======================= PETA GEOGRAFIS ======================= -->
+<section id="peta" class="terang-sekali">
+  <div class="wrap">
+    <p class="eyebrow">Peta</p>
+    <h2>Peta geografis</h2>
+    <p class="intro" style="margin-bottom:34px">
+      Hasil analisis pada grid heksagon H3 resolusi 8 (917 sel, ±0,74 km² per sel) di
+      <span data-meta="luas">644</span> km² daratan Jakarta.
+    </p>
+    <div class="galeri">
+      <figure class="dapat-klik" data-peta="kepadatan" data-testid="figure-kepadatan" tabindex="0" role="button" aria-label="Interpretasi peta kepadatan aset kreatif"><span class="klik-hint">＋ interpretasi</span><img src="figures/peta_kepadatan.png" alt="Peta kepadatan aset kreatif Jakarta" loading="lazy">
+        <div class="leg-peta">
+          <span><i style="background:#EEEEEE"></i>0</span><span><i style="background:#FEE5D9"></i>0–2</span>
+          <span><i style="background:#FCAE91"></i>2–5</span><span><i style="background:#FB6A4A"></i>5–15</span>
+          <span><i style="background:#DE2D26"></i>15–50</span><span><i style="background:#A50F15"></i>&gt; 50</span>
+        </div>
+        <figcaption>Kepadatan aset kreatif per km² daratan (OpenStreetMap). Konsentrasi tertinggi di koridor pusat dan selatan.</figcaption></figure>
+      <figure class="dapat-klik" data-peta="lisa" data-testid="figure-lisa" tabindex="0" role="button" aria-label="Interpretasi peta klaster lokal LISA"><span class="klik-hint">＋ interpretasi</span><img src="figures/peta_lisa.png" alt="Peta klaster lokal LISA" loading="lazy">
+        <div class="leg-peta">
+          <span><i style="background:#D7191C"></i>High-High</span><span><i style="background:#2C7BB6"></i>Low-Low</span>
+          <span><i style="background:#ABD9E9"></i>Low-High</span><span><i style="background:#FDAE61"></i>High-Low</span>
+          <span><i style="background:#E6E6E6"></i>Tidak signifikan</span>
+        </div>
+        <figcaption>LISA (Local Indicators of Spatial Association) dengan koreksi FDR (false discovery rate) 5 persen.
+          High-High: sel padat aset yang dikelilingi sel padat (<span data-meta="hh">31</span> sel).
+          Low-Low: sel sepi aset yang dikelilingi sel sepi (<span data-meta="ll">114</span> sel).</figcaption></figure>
+      <figure class="dapat-klik" data-peta="akses" data-testid="figure-akses" tabindex="0" role="button" aria-label="Interpretasi peta akses ruang kreatif publik"><span class="klik-hint">＋ interpretasi</span><img src="figures/peta_akses.png" alt="Peta porsi penduduk dengan akses rendah" loading="lazy">
+        <div class="leg-peta">
+          <span><i style="background:#EDF8E9"></i>&lt; 10%</span><span><i style="background:#FDD49E"></i>10–50%</span>
+          <span><i style="background:#FC8D59"></i>50–90%</span><span><i style="background:#B30000"></i>≥ 90%</span>
+          <span><i style="background:#E6E6E6"></i>&lt; 1.000 jiwa</span><span>★ lokasi usulan</span>
+        </div>
+        <figcaption>Porsi penduduk dengan akses rendah ke ruang kreatif publik per sel, dihitung dengan 2SFCA
+          (two-step floating catchment area). Arsiran menandai sel dengan cakupan data rendah; bintang menandai
+          sembilan lokasi usulan Simpul Kreatif.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== REKOMENDASI ======================== -->
+<section id="rekomendasi">
+  <div class="wrap">
+    <p class="eyebrow">Prioritas dan lokasi Simpul Kreatif</p>
+    <h2>Kecamatan prioritas dan lokasi usulan</h2>
+    <p class="intro" style="margin-bottom:34px">
+      Prioritas utama adalah kecamatan yang masuk sembilan besar penduduk dengan akses rendah pada
+      sekurang-kurangnya 80 persen skenario; prioritas lanjutan 50 sampai 79 persen. Kekurangan ruang adalah perkiraan
+      jumlah ruang kreatif publik tambahan agar akses setiap penduduk mencapai median kota.
+    </p>
+    <div class="grid-klaster" id="grid-prioritas"></div>
+    <p class="klik-petunjuk">Klik kartu kecamatan untuk interpretasi otomatis</p>
+
+    <h3 style="font-size:21px;margin:44px 0 10px">Sembilan lokasi usulan Simpul Kreatif</h3>
+    <p class="intro">
+      Dipilih dengan maximal covering location problem (MCLP; memaksimalkan jumlah penduduk yang terjangkau)
+      dari pasar, balai warga, dan kantor pemerintahan di OpenStreetMap, dengan radius layanan 1,5 km.
+      Kesembilan lokasi menjangkau sekitar <span data-meta="mclp_warga">849</span> ribu jiwa, yaitu
+      <span data-meta="mclp_cakupan">48,8</span> persen penduduk dengan akses rendah di sel dengan data memadai, atau
+      <span data-meta="mclp_cakupan_semua">48,1</span> persen dari seluruh penduduk dengan akses rendah. Angka ini peka
+      terhadap radius layanan: sekitar <span data-meta="mclp_r1000">23</span> persen bila radiusnya 1 km dan
+      <span data-meta="mclp_r2500">87</span> persen bila 2,5 km (median 16 skenario). Kecamatan prioritas yang belum
+      terjangkau satu pun lokasi: <span data-meta="tak_terjangkau">Cipayung, Tanjung Priok, dan Ciracas</span>.
+    </p>
+    <div class="tabel-lokasi-wadah">
+      <table class="tabel">
+        <thead><tr><th>No</th><th class="kiri">Kecamatan</th><th class="kiri">Lokasi usulan</th><th class="kanan">Tambahan penduduk terjangkau</th>
+          <th class="kanan">Ke halte</th><th class="kanan">Ke stasiun</th></tr></thead>
+        <tbody id="tabel-lokasi"></tbody>
+      </table>
+    </div>
+    <p class="klik-petunjuk">Klik baris untuk interpretasi tiap lokasi usulan</p>
+    <p class="catatan-kecil">
+      Lokasi usulan adalah kandidat di data OpenStreetMap dan dibaca sebagai zona layanan. Nama kandidat belum
+      diverifikasi; gedung final ditetapkan melalui verifikasi lapangan. Kolom penduduk terjangkau menghitung tambahan
+      di luar yang sudah terjangkau lokasi sebelumnya. Jarak ke halte lebih dari 850 m ditandai warna.
+    </p>
+  </div>
+</section>
+
+<!-- ========================== METODE ========================== -->
+<section id="metode" class="terang-sekali">
+  <div class="wrap sempit">
+    <p class="eyebrow">Metode dan keterbatasan</p>
+    <h2>Bagaimana angka ini dihitung</h2>
+    <p class="intro">
+      Aset kreatif diambil dari OpenStreetMap dan Overture Maps Places, lalu diklasifikasikan ke 12 subsektor
+      berbasis lokasi. Overture tidak memuat data OpenStreetMap, sehingga kedua sumber dapat saling menguji.
+      Titik dari kedua sumber yang berjarak kurang dari 30 m dianggap aset yang sama. Penduduk diambil dari raster
+      WorldPop 100 m dan dikalibrasi ke jumlah penduduk resmi setiap kecamatan (Disdukcapil 2025; BPS 2024 untuk
+      Jakarta Utara).
+    </p>
+    <p class="intro" style="margin-top:16px">
+      Pola sebaran diuji dengan Moran's I (autokorelasi spasial) dan LISA (klaster lokal) pada grid H3
+      resolusi 8, dengan koreksi FDR (false discovery rate). Akses dihitung dengan 2SFCA (two-step floating
+      catchment area) per piksel penduduk, termasuk aset dan penduduk di buffer (zona penyangga) 3 km di luar batas
+      kota agar edge effect (efek tepi) tidak membesar-besarkan kekurangan di pinggiran. Lokasi Simpul Kreatif
+      dipilih dengan MCLP (maximal covering location problem), dan ketahanan daftar prioritas diuji pada 48 skenario.
+    </p>
+    <p class="intro" style="margin-top:16px">
+      Keterbatasan: ruang kreatif informal seperti sanggar dan kampung kreatif belum tercatat di kedua sumber;
+      Overture masih memuat sebagian entri ganda; jarak dihitung sebagai garis lurus; dan data penduduk Jakarta
+      Utara memakai proyeksi BPS, sementara kota lain memakai registrasi Disdukcapil. Cek manual atas
+      <span data-meta="musik_sampel">100</span> sampel venue musik Overture menemukan
+      <span data-meta="musik_keliru">53</span> persen entri bukan ruang kreatif. Karena itu jumlah penduduk dengan akses
+      rendah dibaca sebagai rentang <span data-meta="rendah_jt">1,77</span> sampai
+      <span data-meta="rendah_tanpa_musik_jt">2,19</span> juta jiwa (tanpa kategori venue musik), dan cakupan sembilan
+      lokasi usulan sebagai rentang <span data-meta="mclp_tanpa_musik">42,6</span> sampai
+      <span data-meta="mclp_cakupan">48,8</span> persen. Verifikasi lapangan, Potensi Desa (Podes), dan Sensus
+      Ekonomi 2026 dapat melengkapi atlas ini.
+    </p>
+    <p class="intro" style="margin-top:16px">
+      Seluruh analisis memakai data berlisensi terbuka dan dapat dijalankan ulang. Angka di atlas ini berasal dari
+      run notebook Tahap 3 tanggal <span data-meta="run">27 September 2026</span>.
+      <a href="https://github.com/barata90/atlas-ekraf-jakarta/tree/main/notebooks" rel="noopener">Notebook</a>,
+      <a href="https://github.com/barata90/atlas-ekraf-jakarta/tree/main/outputs/tahap3/tables" rel="noopener">tabel</a>,
+      <a href="https://github.com/barata90/atlas-ekraf-jakarta/tree/main/outputs/tahap3/figures" rel="noopener">gambar</a>,
+      serta <a href="https://github.com/barata90/atlas-ekraf-jakarta/tree/main/data" rel="noopener">data dan catatan
+      asal data (provenance)</a> tersedia di repositori.
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap kolom">
+    <div>
+      <h4>Tentang</h4>
+      <p>Atlas Ekonomi Kreatif Jakarta adalah aplikasi pendamping karya tulis Jakarta Economic Forum 2026,
+         Topik 4: Penguatan Infrastruktur Pendukung Ekonomi Kreatif Jakarta.</p>
+    </div>
+    <div>
+      <h4>Sumber data</h4>
+      <ul>
+        <li>OpenStreetMap contributors (ODbL)</li>
+        <li>Overture Maps Foundation (CDLA Permissive 2.0)</li>
+        <li>WorldPop, University of Southampton (CC-BY 4.0)</li>
+        <li>Disdukcapil DKI Jakarta dan BPS (penduduk kecamatan)</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Repositori</h4>
+      <ul>
+        <li><a href="https://github.com/barata90/atlas-ekraf-jakarta" rel="noopener">github.com/barata90/atlas-ekraf-jakarta</a></li>
+        <li>Kode: lisensi MIT</li>
+        <li>Data turunan: ODbL</li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap footer-aksi">
+    <button type="button" id="cetak" class="tbl-cetak" data-testid="btn-cetak">Cetak / simpan sebagai PDF</button>
+    <span>Tata letak ramah cetak untuk lampiran dokumen resmi.</span>
+  </div>
+</footer>
+
+<!-- bar progres baca -->
+<div class="progres" id="progres" aria-hidden="true"></div>
+
+<!-- modal interpretasi otomatis -->
+<div class="interp-overlay" id="interp-overlay" data-testid="interp-overlay" hidden>
+  <div class="interp" role="dialog" aria-modal="true" aria-labelledby="interp-judul" data-testid="interp-dialog">
+    <button type="button" class="interp-tutup" data-testid="interp-close" aria-label="Tutup interpretasi">×</button>
+    <span class="interp-hex" aria-hidden="true"></span>
+    <p class="interp-kategori" id="interp-kategori"></p>
+    <h3 class="interp-judul" id="interp-judul"></h3>
+    <p class="interp-sub" id="interp-sub"></p>
+    <div class="interp-stat" id="interp-stat"></div>
+    <div class="interp-teks" id="interp-teks"></div>
+    <div class="interp-aksi">
+      <button type="button" class="interp-btn" id="interp-copy" data-testid="interp-copy">
+        <span aria-hidden="true">⧉</span> Salin teks
+      </button>
+      <button type="button" class="interp-btn" id="interp-share" data-testid="interp-share" hidden>
+        <span aria-hidden="true">↗</span> Bagikan
+      </button>
+      <button type="button" class="interp-btn utama" id="interp-export" data-testid="interp-export">
+        <span aria-hidden="true">↓</span> Unduh PNG
+      </button>
+      <span class="interp-umpan" id="interp-umpan" data-testid="interp-umpan" role="status" aria-live="polite"></span>
+    </div>
+    <p class="interp-kaki">Interpretasi disusun otomatis dari angka wilayah. Metode: 2SFCA · Moran's I · LISA · DBSCAN · MCLP.</p>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/narrative.js"></script>
+<script src="assets/js/interpretasi.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

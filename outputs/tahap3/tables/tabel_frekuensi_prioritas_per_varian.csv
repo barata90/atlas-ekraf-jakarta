@@ -1,0 +1,9 @@
+kecamatan,status,frek_top9,penduduk_worldpop,penduduk_resmi,frek_pop: WorldPop,frek_pop: WorldPop dikalibrasi data resmi,frek_pasokan: Overture non-kuliner,frek_pasokan: Overture ruang kreatif publik,frek_pasokan: gabungan non-kuliner,frek_pasokan: gabungan ruang kreatif publik,rasio_worldpop_resmi
+Cakung,Prioritas utama,1.0,550794.7687,582775.0,1.0,1.0,1.0,1.0,1.0,1.0,0.9451
+Kalideres,Prioritas utama,1.0,481194.5889,461389.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0429
+Cengkareng,Prioritas utama,0.9583,486364.3087,575401.0,0.9167,1.0,1.0,1.0,0.8333,1.0,0.8453
+Cilincing,Prioritas utama,1.0,353372.0285,445729.0,1.0,1.0,1.0,1.0,1.0,1.0,0.7928
+Koja,Prioritas lanjutan,0.7292,236957.2875,342279.0,0.4583,1.0,1.0,0.5,0.9167,0.5,0.6923
+Cipayung,Prioritas utama,1.0,375915.115,306380.0,1.0,1.0,1.0,1.0,1.0,1.0,1.227
+Tanjung Priok,Prioritas utama,0.9167,410894.8748,406441.0,0.8333,1.0,1.0,0.8333,0.8333,1.0,1.011
+Ciracas,Prioritas lanjutan,0.6875,304055.0422,319431.0,0.625,0.75,1.0,0.75,1.0,0.0,0.9519

@@ -1,0 +1,477 @@
+/* ============================================================
+   MESIN INTERPRETASI OTOMATIS (berbasis aturan/rumus)
+   Menyusun interpretasi berbahasa Indonesia dari angka tiap
+   elemen (batang subsektor, klaster, kecamatan, tabel, peta)
+   lalu menampilkannya pada modal. Tanpa server / tanpa AI.
+   ============================================================ */
+
+const INTERP = (function () {
+  "use strict";
+
+  const n = NARASI.n;
+  const ribuan = NARASI.ribuan;
+  const M = DATA.meta;
+
+  const WARNA = {
+    coral: "#FF6B47", teal: "#3E9BB5", emas: "#E9B44C",
+    sukses: "#5FBF8B", ungu: "#9B6DB5", kabut: "#A9B6B8",
+    // pemetaan dari label tag kecamatan
+    kritis: "#FF6B47", prioritas: "#E9B44C", matang: "#5FBF8B",
+    monokultur: "#9B6DB5", netral: "#A9B6B8",
+  };
+
+  let overlay, dialog, elKat, elJudul, elSub, elStat, elTeks, btnTutup, elUmpan;
+  let pemicuTerakhir = null;
+  let terakhir = null;
+  let umpanTimer = null;
+
+  function pasang() {
+    overlay = document.getElementById("interp-overlay");
+    if (!overlay || dialog) return;
+    dialog = overlay.querySelector(".interp");
+    elKat = document.getElementById("interp-kategori");
+    elJudul = document.getElementById("interp-judul");
+    elSub = document.getElementById("interp-sub");
+    elStat = document.getElementById("interp-stat");
+    elTeks = document.getElementById("interp-teks");
+    btnTutup = overlay.querySelector(".interp-tutup");
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) tutup(); });
+    btnTutup.addEventListener("click", tutup);
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !overlay.hidden) tutup(); });
+
+    elUmpan = document.getElementById("interp-umpan");
+    const bCopy = document.getElementById("interp-copy");
+    const bShare = document.getElementById("interp-share");
+    const bExport = document.getElementById("interp-export");
+    if (bCopy) bCopy.addEventListener("click", salin);
+    if (bExport) bExport.addEventListener("click", ekspor);
+    if (bShare) {
+      if (navigator.share) bShare.addEventListener("click", bagikan);
+      else bShare.hidden = true;
+    }
+  }
+
+  function buka(d, pemicu) {
+    pasang();
+    if (!overlay) return;
+    pemicuTerakhir = pemicu || null;
+    terakhir = d;
+    dialog.style.setProperty("--aksen", WARNA[d.warna] || d.warna || WARNA.coral);
+    elKat.textContent = d.kategori || "Interpretasi";
+    elJudul.textContent = d.judul || "";
+    elSub.textContent = d.sub || "";
+    elSub.style.display = d.sub ? "" : "none";
+    elStat.innerHTML = (d.stat || [])
+      .map(([l, v]) => `<div><b class="mono">${v}</b><span>${l}</span></div>`).join("");
+    elTeks.innerHTML = (d.paragraf || []).map((p) => `<p>${p}</p>`).join("");
+    overlay.hidden = false;
+    requestAnimationFrame(() => overlay.classList.add("tampil"));
+    document.body.style.overflow = "hidden";
+    dialog.scrollTop = 0;
+    btnTutup.focus();
+  }
+
+  function tutup() {
+    if (!overlay || overlay.hidden) return;
+    overlay.classList.remove("tampil");
+    document.body.style.overflow = "";
+    setTimeout(() => { overlay.hidden = true; }, 320);
+    if (pemicuTerakhir && pemicuTerakhir.focus) pemicuTerakhir.focus();
+  }
+
+  /* ---------- BATANG SUBSEKTOR ---------- */
+  function subsektor(s, pemicu) {
+    const totalOvt = DATA.subsektor.reduce((a, b) => a + b.ovt, 0);
+    const pctOvt = (s.ovt / totalOvt) * 100;
+    const cakupan = s.ovt ? (s.osm / s.ovt) * 100 : 0;
+    const urut = [...DATA.subsektor].sort((a, b) => b.ovt - a.ovt);
+    const rank = urut.findIndex((x) => x.nama === s.nama) + 1;
+
+    const p1 = `<b>${s.nama}</b> adalah subsektor ${s.kat.toLowerCase()} dan menempati peringkat ${rank} dari ${DATA.subsektor.length} subsektor menurut jumlah aset. Overture Maps mencatat <b>${n(s.ovt)} aset</b>, sekitar ${n(pctOvt, 1)} persen dari seluruh aset kreatif kota.`;
+
+    let p2 = `OpenStreetMap hanya mencatat ${n(s.osm)} aset pada subsektor ini, atau ${n(cakupan, 1)} persen dari jumlah Overture. `;
+    p2 += cakupan < 10
+      ? "Selisih yang besar ini menunjukkan OSM belum bisa diandalkan untuk memetakan subsektor tersebut, sehingga atlas memakai gabungan kedua sumber."
+      : cakupan < 30
+        ? "Cakupan OSM masih tipis, sehingga penggabungan kedua sumber tetap diperlukan."
+        : "Cakupan OSM pada subsektor ini termasuk relatif lengkap dibanding subsektor lain.";
+
+    let p3 = s.kat === "Kuliner"
+      ? `Sebagai subsektor kuliner, ${s.nama.toLowerCase()} ikut menegaskan dominasi kuliner yang mencapai sekitar ${n(M.pct_kuliner_ovt, 0)} persen dari seluruh aset kreatif Jakarta.`
+      : "Sebagai subsektor non-kuliner, jumlahnya jauh lebih kecil daripada kuliner. Aset non-kuliner seperti inilah yang menjadi fokus penguatan.";
+    if (s.nama === "Musik" && M.musik_keliru !== null && M.musik_keliru !== undefined) {
+      p3 += ` Kategori venue musik Overture (${n(M.musik_venue_ovt)} titik) perlu dibaca hati-hati: cek manual atas ${n(M.musik_sampel)} sampel acak menemukan ${n(M.musik_keliru, 0)} persen entri bukan ruang kreatif (selang kepercayaan 95 persen: ${n(M.musik_keliru_bawah, 1)} sampai ${n(M.musik_keliru_atas, 1)} persen).`;
+    }
+
+    buka({
+      kategori: "Interpretasi · Subsektor",
+      judul: s.nama,
+      sub: s.kat,
+      warna: s.kat === "Kuliner" ? "coral" : "teal",
+      stat: [
+        ["Overture", n(s.ovt)],
+        ["OpenStreetMap", n(s.osm)],
+        ["Pangsa kota", n(pctOvt, 1) + "%"],
+        ["Tercatat OSM", n(cakupan, 1) + "%"],
+      ],
+      paragraf: [p1, p2, p3],
+    }, pemicu);
+  }
+
+  /* ---------- KARTU KLASTER ---------- */
+  function klaster(c, rank, pemicu) {
+    const dens = c.luas ? c.poi / c.luas : 0;
+    const ragam = c.pangsa >= 15 ? "beragam" : c.pangsa >= 10 ? "cukup beragam" : "didominasi kuliner";
+
+    const p1 = `Klaster ke-${rank} berpusat di <b>${c.kec}</b>, memuat <b>${n(c.poi)} aset kreatif</b> dalam ${n(c.luas, 2)} km² (kepadatan sekitar ${n(dens, 0)} aset per km²). DBSCAN menggabungkan aset yang berjarak kurang dari 400 m, tanpa mengikuti batas administrasi.`;
+
+    const p2 = `Sebanyak ${n(c.nonkul)} aset (${n(c.pangsa, 1)} persen) berada di luar kuliner, tersebar pada ${c.nsub} subsektor (indeks keragaman ${n(c.ent, 2)}). Karena itu klaster ini tergolong <b>${ragam}</b>.`;
+
+    const p3 = c.pangsa < 10
+      ? "Karena hampir seluruhnya kuliner, potensi terbesar klaster ini ada pada diversifikasi ke subsektor lain seperti desain, musik, atau kriya."
+      : c.pangsa >= 15
+        ? "Keragaman subsektornya relatif tinggi, sehingga klaster ini dapat menjadi rujukan ekosistem kreatif yang campuran dan lebih tahan guncangan."
+        : "Keragamannya sedang; menambah satu atau dua subsektor non-kuliner sudah cukup memperkuat ekosistemnya.";
+
+    buka({
+      kategori: "Interpretasi · Klaster",
+      judul: `Klaster ${rank}: ${c.kec}`,
+      sub: `${n(c.poi)} aset · ${ragam}`,
+      warna: "teal",
+      stat: [
+        ["Aset", n(c.poi)],
+        ["Non-kuliner", `${n(c.nonkul)} (${n(c.pangsa, 0)}%)`],
+        ["Subsektor", c.nsub],
+        ["Luas", n(c.luas, 2) + " km²"],
+      ],
+      paragraf: [p1, p2, p3],
+    }, pemicu);
+  }
+
+  /* ---------- KECAMATAN (kartu prioritas / heksagon) ---------- */
+  function kecamatan(k, pemicu) {
+    if (!k) return;
+    const r = NARASI.tulis(k, DATA.kecamatan);
+    buka({
+      kategori: "Profil kecamatan",
+      judul: k.nama,
+      sub: `${k.kota} · ${r.tag}`,
+      warna: r.warna,
+      stat: [
+        ["Penduduk", ribuan(k.pop)],
+        ["Akses / 100 rb", n(k.akses, 1)],
+        ["Akses rendah", n(k.pct_rendah, 0) + "%"],
+        ["Dekat halte", n(k.halte, 0) + "%"],
+      ],
+      paragraf: r.paragraf,
+    }, pemicu);
+  }
+
+  /* ---------- BARIS TABEL SENSITIVITAS ---------- */
+  function sensitivitas(s, pemicu) {
+    const dasar = DATA.sensitivitas[0];
+    const kuat = s.I >= 0.4
+      ? "autokorelasi spasial yang kuat"
+      : s.I >= 0.25
+        ? "autokorelasi spasial sedang"
+        : "autokorelasi spasial lemah namun tetap positif";
+    const pTeks = s.p <= 0.00011 ? "≤ 0,0001" : n(s.p, 4);
+
+    const p1 = `Pada skenario "<b>${s.skenario}</b>", Moran's I bernilai <b>${n(s.I, 3)}</b>. Nilai positif ini menandakan ${kuat}: sel yang padat aset cenderung berdekatan dengan sel padat lain, bukan tersebar acak.`;
+    const p2 = s.p <= 0.00011
+      ? "Dari 9.999 permutasi acak, tidak satu pun menghasilkan Moran's I setinggi nilai teramati. Nilai p karena itu dilaporkan sebagai ≤ 0,0001, yaitu batas terkecil yang dapat dicapai uji ini, dan hipotesis sebaran acak ditolak."
+      : `Nilai p dari uji permutasi (9.999 kali) adalah ${pTeks}.`;
+
+    let p3 = `Uji LISA pada skenario ini menemukan ${n(s.hh)} sel klaster tinggi (High-High) dan ${n(s.ll)} sel klaster rendah (Low-Low) dari ${n(s.n)} sel.`;
+    if (s.skenario !== dasar.skenario) {
+      const arah = s.I >= dasar.I ? "lebih tinggi" : "lebih rendah";
+      p3 += ` Dibanding skenario utama (Moran's I ${n(dasar.I, 3)}), nilainya ${arah}. Moran's I positif dan signifikan di semua skenario, sehingga kesimpulan bahwa aset kreatif mengelompok tidak bergantung pada pilihan resolusi, transformasi, atau sumber data.`;
+      if (s.skenario.startsWith("OSM, tanpa kuliner") && s.ll === 0) {
+        p3 += " Jumlah sel Low-Low menjadi nol karena sebagian besar sel tanpa kuliner bernilai nol; angka ini tidak dapat dipakai sebagai ukuran ketimpangan.";
+      }
+    } else {
+      p3 += " Ini adalah skenario utama yang menjadi acuan pembanding bagi skenario lainnya.";
+    }
+
+    buka({
+      kategori: "Interpretasi · Autokorelasi spasial",
+      judul: "Moran's I " + n(s.I, 3),
+      sub: s.skenario,
+      warna: "emas",
+      stat: [
+        ["Moran's I", n(s.I, 3)],
+        ["Nilai p", pTeks],
+        ["High-High", n(s.hh)],
+        ["Low-Low", n(s.ll)],
+      ],
+      paragraf: [p1, p2, p3],
+    }, pemicu);
+  }
+
+  /* ---------- BARIS TABEL LOKASI USULAN ---------- */
+  function lokasi(z, pemicu) {
+    let p1 = `Lokasi usulan ke-${z.no} adalah <b>${z.nama}</b> (${z.jenis}) di Kecamatan ${z.kec}. Titik ini dipilih dengan MCLP (maximal covering location problem) dari kandidat pasar, balai warga, dan kantor pemerintahan di OpenStreetMap, sebagai kandidat yang pada urutan ke-${z.no} menambah penduduk akses rendah terjangkau paling banyak.`;
+    if (z.verifikasi) {
+      p1 += " Nama kandidat di OpenStreetMap tidak menyerupai fasilitas publik, sehingga titik ini dibaca sebagai zona layanan; gedungnya dipilih melalui verifikasi lapangan.";
+    }
+    const p2 = `Simpul Kreatif di titik ini menambah sekitar <b>${ribuan(z.warga)} penduduk</b> berakses rendah yang terjangkau dalam radius layanan 1,5 km, di luar yang sudah terjangkau lokasi sebelumnya. Bersama lokasi sebelumnya, cakupan kumulatifnya mencapai ${n(z.kumulatif, 1)} persen dari penduduk akses rendah di sel dengan data memadai.`;
+
+    let p3 = z.halte > 850
+      ? `Jaraknya ${n(z.halte)} m dari halte terdekat (lebih dari 850 m), sehingga simpul ini perlu didukung layanan pengumpan (feeder) agar mudah dijangkau.`
+      : `Berada ${n(z.halte)} m dari halte terdekat, lokasi ini relatif mudah dicapai dengan transportasi umum.`;
+    p3 += ` Stasiun terdekat berjarak ${n(z.stasiun)} m.`;
+
+    buka({
+      kategori: "Interpretasi · Lokasi usulan",
+      judul: z.nama,
+      sub: `${z.jenis} · ${z.kec}`,
+      warna: "coral",
+      stat: [
+        ["Tambahan terjangkau", ribuan(z.warga)],
+        ["Cakupan kumulatif", n(z.kumulatif, 1) + "%"],
+        ["Ke halte", n(z.halte) + " m"],
+        ["Ke stasiun", n(z.stasiun) + " m"],
+      ],
+      paragraf: [p1, p2, p3],
+    }, pemicu);
+  }
+
+  /* ---------- GAMBAR PETA GEOGRAFIS ---------- */
+  const PETA = {
+    kepadatan: {
+      judul: "Peta kepadatan aset kreatif",
+      warna: "coral",
+      stat: () => [
+        ["Moran's I (OSM)", n(M.moran_osm, 3)],
+        ["Aset OSM", n(M.aset_osm)],
+        ["Aset Overture", n(M.aset_ovt)],
+        ["Pangsa kuliner", n(M.pct_kuliner_ovt, 0) + "%"],
+      ],
+      paragraf: () => [
+        "Peta ini menampilkan jumlah aset kreatif per km² pada grid heksagon H3. Warna makin gelap-merah menandakan konsentrasi yang makin tinggi.",
+        `Konsentrasi tertinggi membentuk koridor di pusat dan selatan kota, antara lain Setiabudi, Kebayoran Baru, Tanah Abang, dan Menteng. Moran's I <b>${n(M.moran_osm, 3)}</b> (p ≤ 0,0001) menunjukkan bahwa sel yang padat aset cenderung berdekatan.`,
+        "Pinggiran barat, utara, dan timur cenderung terang, menandakan aset kreatif yang jarang. Peta ini memakai data OpenStreetMap, yang hanya mencatat sebagian aset; karena itu analisis akses dan prioritas memakai gabungan OpenStreetMap dan Overture Maps.",
+      ],
+    },
+    lisa: {
+      judul: "Peta klaster lokal (LISA)",
+      warna: "teal",
+      stat: () => [
+        ["High-High", n(M.hh)],
+        ["Low-Low", n(M.ll)],
+        ["Koreksi", "FDR 5%"],
+        ["Grid", "H3 res 8"],
+      ],
+      paragraf: () => [
+        "LISA (Local Indicators of Spatial Association) memilah tiap sel menjadi klaster High-High, Low-Low, atau bukan klaster, dengan koreksi FDR (false discovery rate) 5 persen.",
+        `Terdapat <b>${n(M.hh)} sel High-High</b>, yaitu sel padat aset yang dikelilingi sel padat dan menjadi inti kawasan kreatif. Sebaliknya, <b>${n(M.ll)} sel Low-Low</b> menandai kawasan yang sama-sama sepi aset.`,
+        "Sebagian sel Low-Low berada di tepi batas kota dan dapat dipengaruhi aset di Bodetabek yang tidak ikut diambil. Karena itu prioritas ditetapkan dengan ukuran akses berbasis penduduk yang memakai zona penyangga 3 km, bukan dari jumlah sel Low-Low.",
+      ],
+    },
+    akses: {
+      judul: "Peta akses ruang kreatif publik",
+      warna: "coral",
+      stat: () => [
+        ["Akses rendah", ribuan(M.rendah)],
+        ["Porsi kota", n(M.pct_rendah, 1) + "%"],
+        ["Tertinggi", n(M.akses_max, 1)],
+        ["Terendah", n(M.akses_min, 1)],
+      ],
+      paragraf: () => [
+        "Peta ini memakai 2SFCA (two-step floating catchment area) untuk mengukur porsi penduduk tiap sel yang berakses rendah ke ruang kreatif publik. Warna makin merah berarti makin banyak penduduk yang kekurangan akses.",
+        `Sekitar <b>${ribuan(M.rendah)} penduduk</b> (${n(M.pct_rendah, 1)} persen) berakses rendah. Aksesnya sangat timpang: ${n(M.akses_max, 1)} per 100 ribu di ${M.kec_max}, tetapi hanya ${n(M.akses_min, 1)} di ${M.kec_min}.`,
+        `Bintang menandai sembilan lokasi usulan Simpul Kreatif hasil MCLP. Kesembilannya menjangkau sekitar ${n(M.mclp_warga / 1e3, 0)} ribu jiwa, atau ${n(M.mclp_cakupan, 1)} persen penduduk akses rendah di sel dengan data memadai (${n(M.mclp_cakupan_semua, 1)} persen dari seluruh penduduk akses rendah).`,
+      ],
+    },
+  };
+
+  function peta(key, pemicu) {
+    const d = PETA[key];
+    if (!d) return;
+    buka({
+      kategori: "Interpretasi · Peta",
+      judul: d.judul,
+      sub: "",
+      warna: d.warna,
+      stat: d.stat(),
+      paragraf: d.paragraf(),
+    }, pemicu);
+  }
+
+  /* ---------- SALIN · BAGIKAN · UNDUH PNG ---------- */
+  function umpan(msg) {
+    if (!elUmpan) return;
+    elUmpan.textContent = msg;
+    elUmpan.classList.add("tampil");
+    clearTimeout(umpanTimer);
+    umpanTimer = setTimeout(() => elUmpan.classList.remove("tampil"), 1900);
+  }
+
+  function teksPolos(d) {
+    if (!d) return "";
+    const baris = [d.judul || ""];
+    if (d.sub) baris.push(d.sub);
+    baris.push("");
+    (d.stat || []).forEach(([l, v]) => baris.push(`${l}: ${v}`));
+    baris.push("");
+    (d.paragraf || []).forEach((p) => baris.push(String(p).replace(/<[^>]+>/g, "")));
+    baris.push("");
+    baris.push("Atlas Ekonomi Kreatif Jakarta · Jakarta Economic Forum 2026");
+    return baris.join("\n");
+  }
+
+  function fallbackSalin(t, ok, gagal) {
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = t; ta.style.position = "fixed"; ta.style.top = "-1000px"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      const berhasil = document.execCommand("copy");
+      document.body.removeChild(ta);
+      berhasil ? ok() : gagal();
+    } catch (e) { gagal(); }
+  }
+
+  function salin() {
+    if (!terakhir) return;
+    const t = teksPolos(terakhir);
+    const ok = () => umpan("Teks tersalin ✓");
+    const gagal = () => umpan("Tidak bisa menyalin");
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(t).then(ok).catch(() => fallbackSalin(t, ok, gagal));
+    } else fallbackSalin(t, ok, gagal);
+  }
+
+  function bagikan() {
+    if (!terakhir) return;
+    if (navigator.share) {
+      navigator.share({ title: terakhir.judul, text: teksPolos(terakhir) }).catch(() => {});
+    } else salin();
+  }
+
+  function jalurHex(ctx, cx, cy, r) {
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const a = (Math.PI / 180) * (60 * i - 90);
+      const x = cx + r * Math.cos(a), y = cy + r * Math.sin(a);
+      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    }
+    ctx.closePath();
+  }
+
+  function slug(s) {
+    return String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "atlas";
+  }
+
+  async function ekspor() {
+    const d = terakhir;
+    if (!d) return;
+    umpan("Menyiapkan PNG…");
+    const aksen = WARNA[d.warna] || d.warna || WARNA.coral;
+    const W = 1080, P = 76, S = 2;
+    try {
+      await Promise.all([
+        document.fonts.load("800 56px Archivo"),
+        document.fonts.load("700 36px Archivo"),
+        document.fonts.load("500 22px 'IBM Plex Mono'"),
+        document.fonts.load("400 30px Newsreader"),
+      ]);
+      await document.fonts.ready;
+    } catch (e) { /* lanjut dengan fallback font */ }
+
+    const paint = (ctx, gambar) => {
+      const maxW = W - P * 2;
+      let y = P;
+      const wrap = (txt) => {
+        const kata = String(txt).split(/\s+/);
+        const lines = []; let cur = "";
+        for (const w of kata) {
+          const test = cur ? cur + " " + w : w;
+          if (ctx.measureText(test).width > maxW && cur) { lines.push(cur); cur = w; }
+          else cur = test;
+        }
+        if (cur) lines.push(cur);
+        return lines;
+      };
+      const blok = (txt, font, warna, lh, gap, opt) => {
+        opt = opt || {};
+        y += gap;
+        ctx.font = font; ctx.fillStyle = warna; ctx.textBaseline = "top";
+        const spasi = "letterSpacing" in ctx;
+        if (spasi) ctx.letterSpacing = (opt.spacing || 0) + "px";
+        const t = opt.upper ? String(txt).toUpperCase() : txt;
+        for (const ln of wrap(t)) { if (gambar) ctx.fillText(ln, P, y); y += lh; }
+        if (spasi) ctx.letterSpacing = "0px";
+      };
+      const garis = (gap) => { y += gap; if (gambar) { ctx.fillStyle = "rgba(255,255,255,.12)"; ctx.fillRect(P, y, maxW, 1); } y += 1; };
+
+      blok(d.kategori || "Interpretasi", "500 22px 'IBM Plex Mono'", aksen, 30, 0, { upper: true, spacing: 3 });
+      blok(d.judul || "", "800 56px Archivo", "#F2F0EA", 62, 16);
+      if (d.sub) blok(d.sub, "500 22px 'IBM Plex Mono'", "#8FA0A3", 30, 8, { upper: true, spacing: 2 });
+
+      garis(30);
+      const stat = d.stat || [];
+      const colW = maxW / 2;
+      y += 26;
+      for (let i = 0; i < stat.length; i += 2) {
+        const rowY = y;
+        for (let j = 0; j < 2; j++) {
+          const s = stat[i + j]; if (!s) continue;
+          const x = P + j * colW;
+          if (gambar) {
+            ctx.textBaseline = "top";
+            ctx.font = "700 36px Archivo"; ctx.fillStyle = "#F2F0EA";
+            ctx.fillText(String(s[1]), x, rowY);
+            ctx.font = "500 17px 'IBM Plex Mono'"; ctx.fillStyle = "#8FA0A3";
+            if ("letterSpacing" in ctx) ctx.letterSpacing = "1px";
+            ctx.fillText(String(s[0]).toUpperCase(), x, rowY + 46);
+            if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
+          }
+        }
+        y = rowY + 88;
+      }
+
+      garis(6);
+      y += 28;
+      const paras = d.paragraf || [];
+      for (let i = 0; i < paras.length; i++) {
+        blok(String(paras[i]).replace(/<[^>]+>/g, ""), "400 30px Newsreader", "#E3E1D8", 44, i ? 18 : 0);
+      }
+
+      garis(32);
+      y += 18;
+      blok("Atlas Ekonomi Kreatif Jakarta · Jakarta Economic Forum 2026", "500 18px 'IBM Plex Mono'", "#8FA0A3", 26, 0, { spacing: .5 });
+      blok("Interpretasi otomatis dari angka wilayah · 2SFCA · Moran's I · LISA · DBSCAN · MCLP", "500 15px 'IBM Plex Mono'", "#5F7175", 22, 6);
+
+      return y + P;
+    };
+
+    const meas = document.createElement("canvas").getContext("2d");
+    const H = Math.ceil(paint(meas, false));
+
+    const cv = document.createElement("canvas");
+    cv.width = W * S; cv.height = H * S;
+    const ctx = cv.getContext("2d");
+    ctx.scale(S, S);
+    const g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, "#0C232B"); g.addColorStop(1, "#071417");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = aksen; ctx.fillRect(0, 0, W, 6);
+    ctx.save();
+    ctx.globalAlpha = .1; ctx.fillStyle = aksen;
+    jalurHex(ctx, W - 64, 78, 150); ctx.fill();
+    ctx.restore();
+    paint(ctx, true);
+
+    cv.toBlob((blob) => {
+      if (!blob) { umpan("Gagal membuat PNG"); return; }
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = "interpretasi-" + slug(d.judul) + ".png";
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+      umpan("PNG terunduh ✓");
+    }, "image/png");
+  }
+
+  return { pasang, buka, tutup, subsektor, klaster, kecamatan, sensitivitas, lokasi, peta };
+})();

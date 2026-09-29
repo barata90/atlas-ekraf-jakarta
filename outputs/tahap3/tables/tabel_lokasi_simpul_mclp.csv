@@ -1,0 +1,10 @@
+urutan,nama,jenis,kecamatan,tambahan_terlayani,kumulatif,pct_kebutuhan_kumulatif,jarak_halte_m,jarak_stasiun_m,lon,lat,nama_osm,nama_perlu_verifikasi,nama_tampil
+1,Pusat Grosir PIK,marketplace,Cakung,143707.04583,143707.04583,0.08257,56.04048,1747.96092,106.93414,-6.20306,Pusat Grosir PIK,False,Pusat Grosir PIK
+2,NEOadMediaPromo,marketplace,Cengkareng,117212.15628,260919.20211,0.14991,881.00603,1651.69497,106.74571,-6.14839,NEOadMediaPromo,True,Zona layanan pasar Cengkareng (perlu verifikasi lapangan)
+3,Pasar Semper,marketplace,Koja,107937.75773,368856.95984,0.21193,80.71949,3335.66039,106.9175,-6.12724,Pasar Semper,False,Pasar Semper
+4,Pasar Kosambi Baru,marketplace,Cengkareng,97940.41867,466797.37851,0.2682,1266.18123,1347.59633,106.71709,-6.17353,Pasar Kosambi Baru,False,Pasar Kosambi Baru
+5,Pasar Binaan,marketplace,Kalideres,94091.24749,560888.626,0.32226,2199.24576,5364.91429,106.71289,-6.11525,Pasar Binaan,False,Pasar Binaan
+6,Gedung Pertemuan Citra 1,community_centre,Kalideres,80204.94825,641093.57425,0.36834,628.43684,1399.73324,106.69767,-6.15486,Gedung Pertemuan Citra 1,False,Gedung Pertemuan Citra 1
+7,Bahasa Indonesia,community_centre,Cakung,79546.73232,720640.30656,0.41405,602.84505,2053.69701,106.95525,-6.20683,Bahasa Indonesia,True,Zona layanan balai warga Cakung (perlu verifikasi lapangan)
+8,Pasar Cakung,marketplace,Cakung,71645.08826,792285.39483,0.45521,111.1141,3638.48161,106.93448,-6.18311,Pasar Cakung,False,Pasar Cakung
+9,Pasar Bojong Indah,marketplace,Cengkareng,56651.43156,848936.82639,0.48776,850.93992,594.19539,106.74132,-6.1616,Pasar Bojong Indah,False,Pasar Bojong Indah

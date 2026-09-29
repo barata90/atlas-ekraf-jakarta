@@ -1,0 +1,15 @@
+.DS_Store
+Thumbs.db
+__pycache__/
+*.py[cod]
+.venv/
+node_modules/
+.idea/
+.vscode/
+.env
+.env.*
+*.env
+credentials.json
+*.pem
+*.key
+.credentials

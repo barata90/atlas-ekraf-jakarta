@@ -1,0 +1,617 @@
+{
+  "run_utc": "2026-09-27T19:09:59.445545+00:00",
+  "param": {
+    "perm": 9999,
+    "alpha": 0.05,
+    "d0_list": [
+      1000,
+      1500,
+      2500
+    ],
+    "d0_utama": 1500,
+    "min_porsi_darat": 0.2,
+    "pop_min_sel": 1000,
+    "lengkap_rasio_min": 0.25,
+    "raref_n_kec": 20,
+    "topk": 9
+  },
+  "wilayah": {
+    "n_kec": 42,
+    "luas_km2": 644.0,
+    "n_poi": 2917,
+    "n_nonkul": 375,
+    "poi_dikeluarkan": 7
+  },
+  "snapshot": {
+    "accessed_utc": "2026-09-25T00:18:48.048788+00:00",
+    "n_rujukan": 31391,
+    "pct_aset_juli_tetap": 0.9965718203633871
+  },
+  "overture": {
+    "n_kreatif": 25513,
+    "rasio_osm_overture": 0.11433386900795672,
+    "rho_nonkul": 0.37195597517875356,
+    "rho_kuliner": 0.788125649412487,
+    "sumber": "overturemaps (Python) rilis terbaru"
+  },
+  "grid": {
+    "sel_uji_res8": 917,
+    "sel_tepi_uji_res8": 148,
+    "median_porsi_tepi": 0.626769557970317,
+    "penduduk_wp_42kec": 11160998.847555177
+  },
+  "penduduk": {
+    "sumber": "WorldPop dikalibrasi data resmi",
+    "n_resmi": 42,
+    "total": 10957909.0
+  },
+  "moran": [
+    {
+      "skenario": "seluruh aset, res 8",
+      "variabel": "dens_poi",
+      "bobot": "Queen",
+      "n_sel": 917,
+      "I": 0.36846232404192536,
+      "E_I": -0.001091703056768559,
+      "sd_null": 0.01931133055662289,
+      "z": 19.11913288385531,
+      "p": 0.0001,
+      "pct_sel_nol": 0.49073064340239914,
+      "HH_raw": 65,
+      "HH_fdr": 31,
+      "LL_raw": 189,
+      "LL_fdr": 114,
+      "LH_raw": 16,
+      "LH_fdr": 3,
+      "HL_raw": 4,
+      "HL_fdr": 2,
+      "panas_raw": 81,
+      "panas_fdr": 34,
+      "dingin_raw": 196,
+      "dingin_fdr": 121
+    },
+    {
+      "skenario": "tanpa kuliner, res 8",
+      "variabel": "dens_nonkul",
+      "bobot": "Queen",
+      "n_sel": 917,
+      "I": 0.26563984341668156,
+      "E_I": -0.001091703056768559,
+      "sd_null": 0.01952303421112412,
+      "z": 13.660950017965343,
+      "p": 0.0001,
+      "pct_sel_nol": 0.797164667393675,
+      "HH_raw": 52,
+      "HH_fdr": 4,
+      "LL_raw": 0,
+      "LL_fdr": 0,
+      "LH_raw": 24,
+      "LH_fdr": 2,
+      "HL_raw": 13,
+      "HL_fdr": 13,
+      "panas_raw": 76,
+      "panas_fdr": 62,
+      "dingin_raw": 408,
+      "dingin_fdr": 408
+    },
+    {
+      "skenario": "seluruh aset, res 7",
+      "variabel": "dens_poi",
+      "bobot": "Queen",
+      "n_sel": 140,
+      "I": 0.43542842698594825,
+      "E_I": -0.007194244604316547,
+      "sd_null": 0.04965112831488142,
+      "z": 8.903825051184576,
+      "p": 0.0001,
+      "pct_sel_nol": 0.15,
+      "HH_raw": 18,
+      "HH_fdr": 8,
+      "LL_raw": 28,
+      "LL_fdr": 7,
+      "LH_raw": 1,
+      "LH_fdr": 1,
+      "HL_raw": 1,
+      "HL_fdr": 0,
+      "panas_raw": 19,
+      "panas_fdr": 9,
+      "dingin_raw": 29,
+      "dingin_fdr": 7
+    },
+    {
+      "skenario": "tanpa kuliner, res 7",
+      "variabel": "dens_nonkul",
+      "bobot": "Queen",
+      "n_sel": 140,
+      "I": 0.44674399330143033,
+      "E_I": -0.007194244604316547,
+      "sd_null": 0.05067278189139723,
+      "z": 8.952547117728935,
+      "p": 0.0001,
+      "pct_sel_nol": 0.45714285714285713,
+      "HH_raw": 17,
+      "HH_fdr": 9,
+      "LL_raw": 20,
+      "LL_fdr": 0,
+      "LH_raw": 1,
+      "LH_fdr": 0,
+      "HL_raw": 2,
+      "HL_fdr": 2,
+      "panas_raw": 18,
+      "panas_fdr": 12,
+      "dingin_raw": 27,
+      "dingin_fdr": 14
+    },
+    {
+      "skenario": "seluruh aset log1p, res 8",
+      "variabel": "log_dens",
+      "bobot": "Queen",
+      "n_sel": 917,
+      "I": 0.4984074613447959,
+      "E_I": -0.001091703056768559,
+      "sd_null": 0.01967691581047389,
+      "z": 25.381077278943,
+      "p": 0.0001,
+      "pct_sel_nol": 0.49073064340239914,
+      "HH_raw": 127,
+      "HH_fdr": 78,
+      "LL_raw": 137,
+      "LL_fdr": 0,
+      "LH_raw": 26,
+      "LH_fdr": 7,
+      "HL_raw": 13,
+      "HL_fdr": 5,
+      "panas_raw": 153,
+      "panas_fdr": 109,
+      "dingin_raw": 188,
+      "dingin_fdr": 120
+    },
+    {
+      "skenario": "Overture non-kuliner, res 8",
+      "variabel": "dens_ovt_nonkul",
+      "bobot": "Queen",
+      "n_sel": 917,
+      "I": 0.2818125893279152,
+      "E_I": -0.001091703056768559,
+      "sd_null": 0.018935859827192005,
+      "z": 14.944779219569845,
+      "p": 0.0001,
+      "pct_sel_nol": 0.19738276990185388,
+      "HH_raw": 63,
+      "HH_fdr": 9,
+      "LL_raw": 173,
+      "LL_fdr": 75,
+      "LH_raw": 16,
+      "LH_fdr": 4,
+      "HL_raw": 5,
+      "HL_fdr": 0,
+      "panas_raw": 79,
+      "panas_fdr": 13,
+      "dingin_raw": 178,
+      "dingin_fdr": 87
+    }
+  ],
+  "kontrol": {
+    "sumber_kelengkapan": "Overture Places (aset kreatif OSM per aset kreatif Overture)",
+    "per_sumber": {
+      "Overture": {
+        "rho_all": 0.9076946824134281,
+        "rho_nk": 0.767793474287611,
+        "rho_pop": 0.35656744796094403,
+        "moran_rate": 0.06412091485951739,
+        "p_rate": 0.0015,
+        "bobot": "Queen",
+        "label": "tempat non-kreatif Overture",
+        "moran_awal": 0.2818125893279152,
+        "elastisitas": 1.2614306171846807,
+        "p_elastisitas": 9.082197424790667e-270,
+        "metode": "NB2 MLE (bfgs)",
+        "moran_resid": 0.07580975107649963,
+        "p_resid": 0.0001,
+        "hh_resid": 0
+      },
+      "OSM": {
+        "rho_all": 0.5762125243416988,
+        "rho_nk": 0.4590350232293723,
+        "rho_pop": 0.10565498072700145,
+        "moran_rate": 0.12853993419561086,
+        "p_rate": 0.0001,
+        "bobot": "Queen",
+        "label": "POI non-kreatif OSM",
+        "moran_awal": 0.26563984341668156,
+        "elastisitas": 1.8840137584938719,
+        "p_elastisitas": 1.6691795954685678e-58,
+        "metode": "NB2 MLE (newton)",
+        "moran_resid": 0.05418186085213595,
+        "p_resid": 0.0081,
+        "hh_resid": 0
+      }
+    },
+    "sel_data_tipis": 46,
+    "pct_penduduk_data_tipis": 0.06341358619903567
+  },
+  "entropi": {
+    "artefak_50_50": 0.2789429456511298,
+    "pangsa_kota": 0.12855673637298595,
+    "dbscan": [
+      {
+        "eps_m": 300,
+        "n_klaster": 44,
+        "pct_aset_terklaster": 0.5834761741515255
+      },
+      {
+        "eps_m": 400,
+        "n_klaster": 34,
+        "pct_aset_terklaster": 0.6739801165581076
+      },
+      {
+        "eps_m": 600,
+        "n_klaster": 26,
+        "pct_aset_terklaster": 0.8138498457319163
+      }
+    ]
+  },
+  "dua_sumber": [
+    "Cakung",
+    "Cengkareng",
+    "Cilincing",
+    "Cipayung",
+    "Duren Sawit",
+    "Kalideres",
+    "Penjaringan"
+  ],
+  "akses": {
+    "d0_utama": 1500,
+    "pasokan_utama": "gabungan ruang kreatif publik",
+    "tanpa_nonkul": 2219.354148093601,
+    "tanpa_nonkul_osm": 2823505.5698943827,
+    "akses_rendah": 1766633.5971497814,
+    "a_ref_per100rb": 14.56853549846787,
+    "n_skenario_stabil": 48,
+    "prioritas_stabil": [
+      "Cakung",
+      "Kalideres",
+      "Cengkareng",
+      "Cilincing",
+      "Cipayung",
+      "Tanjung Priok"
+    ],
+    "prioritas_bersyarat": [
+      "Koja",
+      "Ciracas"
+    ],
+    "perlu_verifikasi": [],
+    "pct_tanpa_literasi": 0.09768385718616684,
+    "cakupan_mclp": 0.4877608386351655,
+    "median_per100rb": 14.56853549846787,
+    "ambang_per100rb": 7.284267749233935,
+    "cakupan_mclp_penyebut_memadai": 0.4877608386351655,
+    "cakupan_mclp_penyebut_semua": 0.480539274107213
+  },
+  "angka_final": {
+    "cakupan_per_radius": [
+      {
+        "d0": 1000,
+        "min": 0.19653766146008927,
+        "median": 0.2302315580809711,
+        "max": 0.2763891747532976
+      },
+      {
+        "d0": 1500,
+        "min": 0.42894193271113074,
+        "median": 0.4786833799962135,
+        "max": 0.5246570062460378
+      },
+      {
+        "d0": 2500,
+        "min": 0.824062223189927,
+        "median": 0.8685996746918645,
+        "max": 0.9058867470700488
+      }
+    ],
+    "lokasi_perlu_verifikasi_nama": [
+      "NEOadMediaPromo",
+      "Bahasa Indonesia"
+    ]
+  },
+  "kepekaan_musik": {
+    "n_venue_musik_ovt": 449,
+    "n_ruang_publik_ovt": 2199,
+    "median_per100rb": 11.202260936084967,
+    "akses_rendah": 2191383.42240091,
+    "akses_rendah_ambang_lama": 3448780.356508836,
+    "cakupan_mclp": 0.4260846932301138,
+    "lokasi_sama": 5,
+    "prioritas_utama": [
+      "Cakung",
+      "Cengkareng",
+      "Cilincing",
+      "Cipayung",
+      "Ciracas",
+      "Kalideres",
+      "Tanjung Priok"
+    ],
+    "prioritas_lanjutan": [
+      "Koja"
+    ],
+    "spearman_akses_rendah": 0.9594770836073326
+  },
+  "cek_manual_musik": {
+    "n_sampel": 100,
+    "sebaran": {
+      "venue musik": 20,
+      "ruang kreatif lain": 26,
+      "ruang serbaguna": 1,
+      "bukan ruang kreatif": 53,
+      "tidak jelas": 0
+    },
+    "n_populasi": 449,
+    "pembacaan": [
+      {
+        "ukuran": "longgar: hanya 'bukan ruang kreatif'",
+        "jumlah": 53,
+        "porsi": 0.53,
+        "bawah_95": 0.43288856895480055,
+        "atas_95": 0.6248918211190597,
+        "perkiraan_titik_bawah": 194,
+        "perkiraan_titik_atas": 281
+      },
+      {
+        "ukuran": "ketat: 'bukan ruang kreatif' + 'ruang serbaguna'",
+        "jumlah": 54,
+        "porsi": 0.54,
+        "bawah_95": 0.4426486024827802,
+        "atas_95": 0.6343919176157,
+        "perkiraan_titik_bawah": 199,
+        "perkiraan_titik_atas": 285
+      },
+      {
+        "ukuran": "batas atas: ketat + 'tidak jelas'",
+        "jumlah": 54,
+        "porsi": 0.54,
+        "bawah_95": 0.4426486024827802,
+        "atas_95": 0.6343919176157,
+        "perkiraan_titik_bawah": 199,
+        "perkiraan_titik_atas": 285
+      }
+    ]
+  },
+  "catatan": [
+    {
+      "bagian": "wilayah",
+      "teks": "Wilayah studi terdiri atas 42 kecamatan daratan seluas 644,0 km2. Sebanyak 7 titik di Kepulauan Seribu atau di luar batas dikeluarkan, sehingga analisis memakai 2.917 aset (375 non-kuliner)."
+    },
+    {
+      "bagian": "snapshot",
+      "teks": "Snapshot rujukan diakses 2026-09-25 dan memuat 31.391 POI (tanpa furnitur jalan). Dari 2.917 aset kreatif snapshot Juli, 99,7% masih tercatat dengan label yang sama, 10 hilang atau berubah label, dan 41 aset baru muncul."
+    },
+    {
+      "bagian": "overture",
+      "teks": "Overture Places memuat 25.513 aset kreatif di 42 kecamatan (taksonomi 12 subsektor, confidence ≥ 0,50), berbanding 2.917 di OSM Juli; OSM menangkap sekitar 11% dari jumlah Overture. Karena Overture juga memuat duplikat dan entri usang, angka ini adalah rasio cakupan relatif, bukan tingkat kelengkapan absolut."
+    },
+    {
+      "bagian": "overture",
+      "teks": "Urutan kecamatan menurut jumlah aset konsisten antar-sumber: Spearman ρ = 0,79 untuk kuliner dan ρ = 0,37 untuk non-kuliner."
+    },
+    {
+      "bagian": "overture",
+      "teks": "Kelengkapan OSM relatif paling rendah (kuliner OSM per kuliner Overture, dibanding rata-rata kota) ada di Koja (0,16), Kemayoran (0,23), Cakung (0,28), Kembangan (0,29), Johar Baru (0,33), Kalideres (0,34). Nilai 1 berarti setara rata-rata kota; di bawah 0,5 berarti OSM menangkap kurang dari separuh dari yang diharapkan."
+    },
+    {
+      "bagian": "grid",
+      "teks": "Grid res 8 berisi 917 sel uji. Sebanyak 148 sel uji terpotong batas; median porsi daratannya 63%, artinya bila densitas dibagi luas heksagon penuh, sel-sel ini hanya terbaca sekitar 63% dari densitas sebenarnya dan cenderung memunculkan LL palsu di pinggiran."
+    },
+    {
+      "bagian": "penduduk",
+      "teks": "Total WorldPop 42 kecamatan 11.160.999 jiwa berbanding angka resmi 10.957.909 jiwa. Sebanyak 17 kecamatan menyimpang lebih dari 20%; terbesar Kelapa Gading (+120,3%) dan Johar Baru (-46,6%). Semua hitungan penduduk setelah sel ini memakai WorldPop yang dikalibrasi ke total resmi."
+    },
+    {
+      "bagian": "penduduk",
+      "teks": "Angka resmi berasal dari lebih dari satu sumber atau tahun (Proyeksi BPS 2024: 6 kecamatan; Registrasi Disdukcapil 2025: 36 kecamatan). Registrasi Disdukcapil dan proyeksi BPS berbeda konsep, jadi perbandingan antarkecamatan yang sumbernya berbeda perlu dibaca hati-hati."
+    },
+    {
+      "bagian": "moran",
+      "teks": "Pada grid res 8 terpotong batas (917 sel, bobot Queen), Moran's I kepadatan aset = 0,368 (p ≤ 0,0001; 9.999 permutasi). Hipotesis sebaran acak ditolak. Dengan permutasi, p hanya dapat dilaporkan sebagai batas bawah (p ≤ 1/(jumlah permutasi + 1))."
+    },
+    {
+      "bagian": "moran",
+      "teks": "Tanpa kuliner, Moran's I = 0,266 (p ≤ 0,0001); dengan transformasi log1p, Moran's I = 0,498 (p ≤ 0,0001). Arah dan signifikansi pola konsisten di ketiga ukuran."
+    },
+    {
+      "bagian": "moran",
+      "teks": "Dengan α mentah terdapat 65 sel HH dan 189 sel LL; setelah koreksi FDR tersisa 31 HH dan 114 LL."
+    },
+    {
+      "bagian": "moran",
+      "teks": "Pada res 7, Moran's I tanpa kuliner 0,447 berbanding 0,435 dengan kuliner; selisih 0,011 setara 0,16 simpangan baku distribusi acak. Selisih sebesar ini berada dalam variasi acak; yang dapat dinyatakan adalah pola tetap signifikan tanpa kuliner."
+    },
+    {
+      "bagian": "moran",
+      "teks": "Porsi sel bernilai nol naik dari 49,1% (seluruh aset) menjadi 79,7% (tanpa kuliner). Jumlah sel LL berubah dari 189 ke 0 (α mentah) dan dari 114 ke 0 (FDR). Ketika sebagian besar sel bernilai nol, kontras rendah-rendah justru sulit terdeteksi. Jumlah LL sangat bergantung pada porsi sel nol, sehingga angka LL tanpa kuliner tidak dapat dipakai sebagai ukuran ketimpangan."
+    },
+    {
+      "bagian": "moran",
+      "teks": "Dari 114 sel LL (FDR), 41,2% adalah sel tepi (seluruh grid: 16,1%) dan 8,8% berpenduduk kurang dari 1.000 jiwa. Konsentrasi LL di tepi masih lebih tinggi dari rata-rata grid; sebagian dapat berasal dari aset di Bodetabek yang tidak ikut diambil."
+    },
+    {
+      "bagian": "moran",
+      "teks": "Pada data independen Overture, Moran's I kepadatan aset non-kuliner = 0,282 (p ≤ 0,0001), dengan 9 sel HH setelah FDR. Pengelompokan terulang pada sumber yang tidak memuat data OSM, jadi pola ini tidak semata artefak pemetaan sukarela. Dari 4 sel HH non-kuliner versi OSM, 25% juga HH pada Overture."
+    },
+    {
+      "bagian": "moran",
+      "teks": "Kecamatan dengan sel HH terbanyak (FDR): Setiabudi (7), Grogol Petamburan (5), Kebayoran Baru (5), Palmerah (5), Tanah Abang (3), Menteng (3), Kebon Jeruk (2), Tebet (1). 5 di antaranya (Setiabudi, Kebayoran Baru, Tanah Abang, Menteng, Tebet) termasuk kecamatan hub industri kreatif modern (CIGN) yang diidentifikasi Kurnia dkk. (2026) dari data perusahaan Sensus Ekonomi 2016, sehingga pola pusat kota di data OSM sejalan dengan bukti berbasis sensus."
+    },
+    {
+      "bagian": "moran",
+      "teks": "Moran's I positif menunjukkan bahwa kepadatan aset saling berdekatan. Uji ini belum memisahkan pengaruh intensitas pemetaan dan sebaran penduduk, sehingga belum cukup untuk menyimpulkan aglomerasi Marshallian (lihat SEL 7)."
+    },
+    {
+      "bagian": "kontrol",
+      "teks": "[Overture] Kepadatan aset non-kuliner per sel berkorelasi Spearman ρ = 0,77 (kuat) dengan kepadatan tempat non-kreatif Overture, dan hanya ρ = 0,36 dengan kepadatan penduduk. Moran's I untuk pangsa aset non-kuliner di antara seluruh titik (Queen, Empirical Bayes) = 0,064 (p = 0,0015). Elastisitas terhadap tempat non-kreatif Overture = 1,26; Moran's I residual = 0,076 (p ≤ 0,0001), 0 sel HH residual setelah FDR."
+    },
+    {
+      "bagian": "kontrol",
+      "teks": "[OSM] Kepadatan aset non-kuliner per sel berkorelasi Spearman ρ = 0,46 (sedang) dengan kepadatan POI non-kreatif OSM, dan hanya ρ = 0,11 dengan kepadatan penduduk. Moran's I untuk pangsa aset non-kuliner di antara seluruh titik (Queen, Empirical Bayes) = 0,129 (p ≤ 0,0001). Elastisitas terhadap POI non-kreatif OSM = 1,88; Moran's I residual = 0,054 (p = 0,0081), 0 sel HH residual setelah FDR."
+    },
+    {
+      "bagian": "kontrol",
+      "teks": "Catatan tafsir: kepadatan titik non-kreatif menangkap dua hal sekaligus, yaitu intensitas pemetaan dan kepadatan kegiatan komersial yang nyata. Mengontrolnya menghapus juga aglomerasi komersial yang sesungguhnya, sehingga residual yang lemah tidak berarti pola hanya artefak. Ukuran yang lebih tepat untuk spesialisasi kreatif adalah Moran's I pangsa (EB): 0,064 (p = 0,0015) pada sumber utama. Pangsa aset kreatif terklaster, artinya ada kawasan yang lebih terspesialisasi kreatif dari sekadar padat komersial; klaim yang aman: konsentrasi kreatif mengikuti pusat kegiatan komersial dan sebagian kawasan menunjukkan spesialisasi tambahan, konsisten dengan aglomerasi tetapi belum membuktikan mekanisme Marshallian."
+    },
+    {
+      "bagian": "kontrol",
+      "teks": "Moran lokal kondisional (Wolf, 2024) pada Overture, setelah pengaruh tempat non-kreatif Overture dan kepadatan penduduk dikeluarkan, menyisakan 0 sel HH setelah FDR."
+    },
+    {
+      "bagian": "kontrol",
+      "teks": "Menurut Overture Places (aset kreatif OSM per aset kreatif Overture), 46 sel res 8 memiliki cakupan data rendah (teramati < 25% dari harapan) dan menampung 6,3% penduduk. Porsi penduduk di sel dengan cakupan data rendah tertinggi ada di Cempaka Putih (35%), Kelapa Gading (27%), Grogol Petamburan (25%), Kemayoran (21%), Mampang Prapatan (20%)."
+    },
+    {
+      "bagian": "kontrol",
+      "teks": "Pendekatan fasilitas universal OSM menandai 58 sel dengan cakupan data rendah, dan hanya 0 yang juga tergolong rendah menurut Overture. Fasilitas publik (tempat ibadah, sekolah) di OSM Jakarta relatif lengkap, sedangkan POI komersial jauh tertinggal, sehingga kelengkapan aset kreatif lebih tepat dinilai dengan pembanding berkategori sama (Overture)."
+    },
+    {
+      "bagian": "kontrol",
+      "teks": "Dari sel LL (FDR), 0,0% berada di sel dengan cakupan data rendah."
+    },
+    {
+      "bagian": "entropi",
+      "teks": "Bila kafe dan restoran dihitung sebagai dua kategori, kawasan yang seluruhnya kuliner dengan komposisi 50:50 sudah bernilai 0,279, hampir menyentuh ambang 0,30. Karena itu keduanya digabung menjadi satu kategori kuliner, sehingga kawasan kuliner murni bernilai 0."
+    },
+    {
+      "bagian": "entropi",
+      "teks": "Aturan monokultur: kecamatan disebut monokultur bila batas atas selang Wilson pangsa non-kulinernya di bawah pangsa kota (12,9%). Dengan aturan ini, kecamatan monokultur (minimal 20 aset) adalah: Kebon Jeruk (3,0%), Palmerah (4,9%), Duren Sawit (0,0%), Penjaringan (3,7%)."
+    },
+    {
+      "bagian": "entropi",
+      "teks": "Jumlah klaster DBSCAN bergantung pada radius: 44 klaster (eps 300 m), 34 klaster (eps 400 m), 26 klaster (eps 600 m)."
+    },
+    {
+      "bagian": "entropi",
+      "teks": "Di antara 11 klaster dengan minimal 40 aset, korelasi ukuran klaster dengan entropi terrarefaksi ρ = -0,43; klaster paling beragam berpusat di Menteng (0,446; 95%: 0,388–0,485)."
+    },
+    {
+      "bagian": "entropi",
+      "teks": "Korelasi peringkat pangsa non-kuliner per kecamatan antara OSM dan Overture (kecamatan dengan ≥20 aset OSM): ρ = 0,34. Peringkat keragaman versi OSM kurang dapat diandalkan; gunakan angka Overture untuk perbandingan antarkecamatan."
+    },
+    {
+      "bagian": "entropi",
+      "teks": "Menurut Overture, kecamatan dengan pangsa non-kuliner signifikan di bawah pangsa kota (15,9%): Taman Sari (9,4%), Cempaka Putih (10,4%), Palmerah (10,8%), Tanjung Priok (11,1%), Cilandak (12,6%), Grogol Petamburan (12,7%), Kelapa Gading (13,7%)."
+    },
+    {
+      "bagian": "akses",
+      "teks": "Dengan pasokan gabungan non-kuliner dan radius 1.500 m, 2.219 jiwa (0,0%) tidak memiliki satu pun aset kreatif non-kuliner dalam jangkauan. Dengan OSM saja angkanya 2.823.506 jiwa (25,8%). Selisih sebesar ini menunjukkan bahwa ketiadaan aset non-kuliner menurut OSM sebagian besar adalah celah data OSM; dengan data yang lebih lengkap, ketimpangan terletak pada jumlah dan jenis aset yang terjangkau, bukan pada ada atau tidaknya aset."
+    },
+    {
+      "bagian": "akses",
+      "teks": "Untuk gabungan ruang kreatif publik (seni pertunjukan, galeri, bioskop, venue musik, ruang kerja bersama, perpustakaan dan toko buku, museum, venue event, studio), 48.043 jiwa (0,4%) tidak memiliki satu pun dalam radius 1.500 m. Dengan definisi akses rendah (tanpa aset atau di bawah 50% median kota), 1.766.634 jiwa (16,1%) berada dalam kategori ini; 1.740.478 jiwa di antaranya tinggal di sel dengan data memadai."
+    },
+    {
+      "bagian": "akses",
+      "teks": "Akses per kapita ke gabungan ruang kreatif publik sangat timpang: dari 5,9 aset per 100.000 penduduk di Kalideres sampai 90,1 di Kebayoran Baru (rasio 15 kali)."
+    },
+    {
+      "bagian": "akses",
+      "teks": "Lima kecamatan dengan penduduk dengan akses rendah terbanyak (skenario utama): Cakung 367.892 jiwa (63% penduduknya), kekurangan setara 44 aset, masuk 9 besar di 100% skenario; Kalideres 315.006 jiwa (68% penduduknya), kekurangan setara 40 aset, masuk 9 besar di 100% skenario; Cengkareng 304.741 jiwa (53% penduduknya), kekurangan setara 42 aset, masuk 9 besar di 96% skenario; Cilincing 261.762 jiwa (59% penduduknya), kekurangan setara 38 aset, masuk 9 besar di 100% skenario; Koja 100.906 jiwa (31% penduduknya), kekurangan setara 22 aset, masuk 9 besar di 73% skenario."
+    },
+    {
+      "bagian": "akses",
+      "teks": "Prioritas utama (≥80% dari 48 skenario data terlengkap): Cakung, Kalideres, Cengkareng, Cilincing, Cipayung, Tanjung Priok. Prioritas lanjutan (50–79%): Koja, Ciracas."
+    },
+    {
+      "bagian": "akses",
+      "teks": "Sembilan besar versi OSM saja dan versi pasokan gabungan beririsan pada 7 kecamatan (Cakung, Cengkareng, Cilincing, Cipayung, Duren Sawit, Kalideres, Penjaringan). Kecamatan yang hanya muncul di versi OSM (Kramat Jati, Makasar) kemungkinan besar terangkat oleh celah pemetaan OSM."
+    },
+    {
+      "bagian": "akses",
+      "teks": "Efek tepi: 39,2% penduduk dengan akses rendah tinggal ≤1.500 m dari seluruh batas (termasuk garis pantai), sementara penduduk di zona itu 25,1% dari total. Tanpa aset di buffer 3.000 m luar batas, penduduk dengan akses rendah akan tercatat 1.995.095 jiwa; dengan koreksi menjadi 1.766.634 jiwa. Penyebut 2SFCA juga sudah memasukkan penduduk di luar Jakarta."
+    },
+    {
+      "bagian": "akses",
+      "teks": "Transit sebagai kelayakan: 37,1% penduduk dengan akses rendah tinggal ≤400 m dari halte (seluruh penduduk: 65,7%), dan 11,5% ≤800 m dari stasiun rel."
+    },
+    {
+      "bagian": "akses",
+      "teks": "Sembilan simpul hasil MCLP (kandidat: aset pemerintah/komunitas (OSM)) menjangkau 848.937 penduduk dengan akses rendah, atau 48,8% dari penduduk akses rendah di sel dengan data memadai (48,1% dari seluruh penduduk akses rendah); simpul pertama di Cakung (Pusat Grosir PIK). Dengan kandidat titik tengah sel H3, cakupan 50,9%. Nama kandidat berasal dari tag OSM dan belum diverifikasi, jadi titik-titik ini dibaca sebagai zona layanan; gedung pemerintah yang layak di sekitarnya dipilih melalui verifikasi lapangan."
+    },
+    {
+      "bagian": "akses",
+      "teks": "IKIK (tanpa transit; 50% akses non-kuliner per kapita, 50% pangsa non-kuliner menurut Overture) peka terhadap bobot: korelasi peringkat terendah antar-bobot 0,3/0,5/0,7 = 0,71. IKIK dipakai sebagai deskripsi pasokan, bukan dasar prioritas."
+    },
+    {
+      "bagian": "akses",
+      "teks": "Uji 'Paradoks Kota Sastra': 9,8% penduduk tidak memiliki toko buku, alat tulis, atau perpustakaan dalam radius 1.500 m. Menurut Overture, Jakarta Pusat dan Selatan menampung 56,3% aset literasi, sementara penduduknya 30,8% dari total. Khusus perpustakaan, 36,9% penduduk tidak memilikinya dalam radius yang sama. Konsentrasi aset literasi di pusat kota lebih tinggi daripada konsentrasi penduduknya, sehingga paradoks Kota Sastra didukung data ini."
+    },
+    {
+      "bagian": "angka_final",
+      "teks": "Sembilan simpul menjangkau 848.937 jiwa, yaitu 48,8% dari penduduk akses rendah di sel dengan data memadai dan 48,1% dari seluruh penduduk akses rendah."
+    },
+    {
+      "bagian": "angka_final",
+      "teks": "Cakupan sembilan simpul sangat bergantung pada radius layanan: radius 1,0 km 20%–28% (median 23%); radius 1,5 km 43%–52% (median 48%); radius 2,5 km 82%–91% (median 87%), masing-masing dari 16 skenario."
+    },
+    {
+      "bagian": "angka_final",
+      "teks": "Koja (prioritas lanjutan, masuk sembilan besar di 73% skenario): 46% dengan WorldPop, 100% dengan WorldPop dikalibrasi data resmi; per definisi pasokan Overture non-kuliner 100%, Overture ruang kreatif publik 50%, gabungan non-kuliner 92%, gabungan ruang kreatif publik 50%. WorldPop mentah menghitung penduduknya 69% dari angka resmi. Status ini terutama ditentukan oleh sumber penduduk."
+    },
+    {
+      "bagian": "angka_final",
+      "teks": "Tanjung Priok (prioritas utama, masuk sembilan besar di 92% skenario): 83% dengan WorldPop, 100% dengan WorldPop dikalibrasi data resmi; per definisi pasokan Overture non-kuliner 100%, Overture ruang kreatif publik 83%, gabungan non-kuliner 83%, gabungan ruang kreatif publik 100%."
+    },
+    {
+      "bagian": "angka_final",
+      "teks": "Ciracas (prioritas lanjutan, masuk sembilan besar di 69% skenario): 62% dengan WorldPop, 75% dengan WorldPop dikalibrasi data resmi; per definisi pasokan Overture non-kuliner 100%, Overture ruang kreatif publik 75%, gabungan non-kuliner 100%, gabungan ruang kreatif publik 0%. Status ini terutama ditentukan oleh definisi pasokan."
+    },
+    {
+      "bagian": "angka_final",
+      "teks": "Porsi penduduk akses rendah (sel data memadai) yang terjangkau sembilan simpul di kecamatan prioritas: Cakung 80%; Kalideres 61%; Cengkareng 81%; Cilincing 26%; Koja 41%; Cipayung 0%; Tanjung Priok 0%; Ciracas 0%."
+    },
+    {
+      "bagian": "angka_final",
+      "teks": "Kecamatan prioritas yang belum terjangkau satu pun simpul: Cipayung, Tanjung Priok, Ciracas."
+    },
+    {
+      "bagian": "angka_final",
+      "teks": "Simpul 3 (Pasar Semper, Koja) menjangkau 62% penduduknya dari kecamatan lain, terbanyak dari Cilincing (66.819 jiwa)."
+    },
+    {
+      "bagian": "angka_final",
+      "teks": "Nama OSM yang tidak menyerupai fasilitas publik: simpul 2 'NEOadMediaPromo' (marketplace, Cengkareng); simpul 7 'Bahasa Indonesia' (community_centre, Cakung). Kolom nama_tampil memberi label zona layanan untuk tabel, peta, dan aplikasi web."
+    },
+    {
+      "bagian": "kepekaan_musik",
+      "teks": "Kategori venue musik Overture menyumbang 449 dari 2.199 ruang kreatif publik Overture di Jakarta (20,4%). Setelah digabung dengan OSM, titik pasokan utama berkurang dari 2.349 menjadi 1.905."
+    },
+    {
+      "bagian": "kepekaan_musik",
+      "teks": "Tanpa kategori ini, median akses kota menjadi 11,2 per 100.000 penduduk (sebelumnya 14,6). Dengan ambang yang dihitung ulang, penduduk akses rendah menjadi 2.191.383 jiwa (+24,0%); dengan ambang lama 7,3 yang dipertahankan, 3.448.780 jiwa (+95,2%)."
+    },
+    {
+      "bagian": "kepekaan_musik",
+      "teks": "Daftar prioritas berubah. Prioritas utama tanpa venue musik: Cakung, Cengkareng, Cilincing, Cipayung, Ciracas, Kalideres, Tanjung Priok (masuk: Ciracas). Prioritas lanjutan: Koja."
+    },
+    {
+      "bagian": "kepekaan_musik",
+      "teks": "Korelasi peringkat penduduk akses rendah per kecamatan antara kedua versi: Spearman ρ = 0,96. Cakupan sembilan simpul 48,8% menjadi 42,6%, dengan 5 dari 9 lokasi yang sama."
+    },
+    {
+      "bagian": "kepekaan_musik",
+      "teks": "Semua 6 kecamatan prioritas utama tetap berstatus utama, dan Ciracas naik menjadi prioritas utama. Yang peka adalah besarannya: penduduk akses rendah bergeser +24,0% dan cakupan sembilan simpul berubah dari 48,8% menjadi 42,6%, dengan 5 dari 9 lokasi yang sama. Pembuangan seluruh kategori adalah batas ekstrem, jadi angka skenario utama dan angka tanpa venue musik dibaca sebagai rentang."
+    },
+    {
+      "bagian": "cek_manual_musik",
+      "teks": "Dari 100 sampel acak venue musik Overture: 46 berupa venue musik atau ruang kreatif lain, 1 ruang serbaguna (aula, gedung pertemuan, ballroom), 53 bukan ruang kreatif, dan 0 tidak dapat dipastikan."
+    },
+    {
+      "bagian": "cek_manual_musik",
+      "teks": "Bila ruang serbaguna dihitung sebagai venue acara (sejalan dengan definisi ruang kreatif publik), porsi entri keliru 53,0% (selang Wilson 95% 43,3%–62,5%), setara 194–281 dari 449 titik. Bila ruang serbaguna ikut dianggap keliru, porsinya 54,0% (44,3%–63,4%). Bila seluruh entri 'tidak jelas' juga keliru, batas atasnya 54,0%."
+    },
+    {
+      "bagian": "cek_manual_musik",
+      "teks": "Pada pembacaan paling longgar pun batas bawah selangnya di atas 20 persen, jadi kategori ini perlu disaring sebelum dipakai sebagai pasokan ruang kreatif publik."
+    },
+    {
+      "bagian": "cek_manual_musik",
+      "teks": "Karena hanya sebagian kategori ini keliru, dampaknya diperkirakan berada di antara skenario utama dan skenario tanpa venue musik di SEL 9c: penduduk akses rendah 1.766.634 sampai 2.191.383 jiwa, cakupan sembilan simpul 48,8% sampai 42,6%."
+    }
+  ]
+}
