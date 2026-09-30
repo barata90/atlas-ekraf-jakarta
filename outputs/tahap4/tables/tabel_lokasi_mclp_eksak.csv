@@ -1,0 +1,10 @@
+nama,jenis,kecamatan,juga_dipilih_greedy,nama_tampil
+Bahasa Indonesia,community_centre,Cakung,True,Zona layanan balai warga Cakung (perlu verifikasi lapangan)
+Pusat Grosir PIK,marketplace,Cakung,True,Pusat Grosir PIK
+Pasar Rel Hj. Mas,marketplace,Kalideres,False,Pasar Rel Hj. Mas
+Pasar Air Mancur,marketplace,Cengkareng,False,Pasar Air Mancur
+Pasar Cakung,marketplace,Cakung,True,Pasar Cakung
+Pasar Rawa Lele,marketplace,Kalideres,False,Pasar Rawa Lele
+NEOadMediaPromo,marketplace,Cengkareng,True,Zona layanan pasar Cengkareng (perlu verifikasi lapangan)
+Pasar Binaan,marketplace,Kalideres,True,Pasar Binaan
+Pasar Semper,marketplace,Koja,True,Pasar Semper
